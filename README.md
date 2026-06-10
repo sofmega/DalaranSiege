@@ -2,6 +2,8 @@
 
 Full-stack starter workspace with a Spring Boot backend and Angular frontend.
 
+For project details that should stay current across changes, see `PROJECT_CONTEXT.md`.
+
 ## Structure
 
 ```text
