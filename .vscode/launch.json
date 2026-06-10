@@ -6,7 +6,8 @@
       "name": "Run Spring Boot",
       "request": "launch",
       "mainClass": "com.dalaran.dalarans.DalaranSApplication",
-      "projectName": "dalarans"
+      "projectName": "dalarans",
+      "cwd": "${workspaceFolder}\\backend"
     }
   ]
 }
