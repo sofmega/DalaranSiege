@@ -1,20 +1,20 @@
 [
   {
-    "id": "arthas",
+    "id": "DK",
     "name": "Arthas",
     "heroClass": "Death Knight",
     "roles": ["Spell Damage Dealer", "Tank"],
     "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHeroDeathKnight.png"
   },
   {
-    "id": "thrall",
+    "id": "shaman",
     "name": "Thrall",
     "heroClass": "shaman",
     "roles": ["Spell Damage Dealer", "Healer"],
     "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNThrall.png"
   },
   {
-    "id": "jaina",
+    "id": "mage",
     "name": "Jaina",
     "heroClass": "Mage",
     "roles": ["Spell Damage Dealer"],
@@ -40,5 +40,89 @@
     "heroClass": "Tauren Chieftain",
     "roles": ["Tank", "Melee Damage Dealer"],
     "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHeroTaurenChieftain.png"
+  },
+  {
+    "id": "monk",
+    "name": "Chen Stormstout",
+    "heroClass": "Monk",
+    "roles": ["Melee Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNPandarenBrewmaster.png"
+  },
+  {
+    "id": "shadow-hunter",
+    "name": "Rokhan",
+    "heroClass": "Shadow Hunter",
+    "roles": ["Spell Damage Dealer", "Healer", "Ranged Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNShadowHunter.png"
+  },
+  {
+    "id": "sea-witch",
+    "name": "Lady Vashj",
+    "heroClass": "Sea Witch",
+    "roles": ["Spell Damage Dealer", "Ranged Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNNagaSeaWitch.png"
+  },
+  {
+    "id": "warlord",
+    "name": "Grommash Hellscream",
+    "heroClass": "Warlord",
+    "roles": ["Melee Damage Dealer", "Tank"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHellScream.png"
+  },
+  {
+    "id": "warrior",
+    "name": "Taelan Fordring",
+    "heroClass": "Warrior",
+    "roles": ["Melee Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNGarithos.png"
+  },
+  {
+    "id": "assassin",
+    "name": "Shadowsong",
+    "heroClass": "Assassin",
+    "roles": ["Melee Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHeroDemonHunter.png"
+  },
+  {
+    "id": "ranger",
+    "name": "Sylvanas Windrunner",
+    "heroClass": "Ranger",
+    "roles": ["Ranged Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNSylvanusWindRunner.png"
+  },
+  {
+    "id": "huntress",
+    "name": "Naisha",
+    "heroClass": "Huntress",
+    "roles": ["Ranged Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHuntress.png"
+  },
+  {
+    "id": "marksman",
+    "name": "Magni Bronzebeard",
+    "heroClass": "Marksman",
+    "roles": ["Ranged Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNRifleman.png"
+  },
+  {
+    "id": "warlock",
+    "name": "kel'Thuzad",
+    "heroClass": "Warlock",
+    "roles": ["Spell Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNLichVersion2.png"
+  },
+  {
+    "id": "priest",
+    "name": "Anduin Wrynn",
+    "heroClass": "Priest",
+    "roles": ["Healer", "Spell Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNPriest.png"
+  },
+  {
+    "id": "druid",
+    "name": "Furion",
+    "heroClass": "Druid",
+    "roles": ["Healer", "Spell Damage Dealer", "Tank", "Melee Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNFurion.png"
   }
-]
+  ]
