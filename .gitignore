@@ -37,3 +37,6 @@ build/
 
 ### Local runtime logs ###
 logs/
+
+### Local project notes ###
+PROJECT_CONTEXT.md
