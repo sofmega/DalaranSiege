@@ -1,13 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
+import { GameDataService, HeroDto, ItemDto, ItemRequirement, Shop } from './game-data.service';
 
-interface HeroDto {
-  id: string;
-  name: string;
-  heroClass: string;
-  roles: string[];
-  iconUrl: string;
-}
+type ViewMode = 'heroes' | 'items';
 
 @Component({
   selector: 'app-root',
@@ -15,24 +9,56 @@ interface HeroDto {
   styleUrl: './app.css'
 })
 export class App {
-  private readonly http = inject(HttpClient);
+  private readonly gameDataService = inject(GameDataService);
 
+  protected readonly activeView = signal<ViewMode>('heroes');
   protected readonly heroes = signal<HeroDto[]>([]);
+  protected readonly items = signal<ItemDto[]>([]);
+  protected readonly shops = signal<Shop[]>([]);
+  protected readonly selectedShopId = signal('');
   protected readonly isLoading = signal(true);
   protected readonly errorMessage = signal('');
   protected readonly brokenIconIds = signal(new Set<string>());
 
   constructor() {
-    this.http.get<HeroDto[]>('/api/v1/heroes').subscribe({
-      next: (heroes) => {
-        this.heroes.set(heroes);
-        this.isLoading.set(false);
-      },
-      error: () => {
-        this.errorMessage.set('Could not load heroes. Make sure Spring Boot is running on port 8081.');
-        this.isLoading.set(false);
-      }
-    });
+    this.loadHeroes();
+    this.loadItems();
+    this.loadShops();
+  }
+
+  protected showHeroes(): void {
+    this.activeView.set('heroes');
+  }
+
+  protected showItems(): void {
+    this.activeView.set('items');
+  }
+
+  protected selectShop(event: Event): void {
+    const select = event.target as HTMLSelectElement;
+    this.selectedShopId.set(select.value);
+  }
+
+  protected filteredItems(): ItemDto[] {
+    const shopId = this.selectedShopId();
+
+    if (!shopId) {
+      return this.items();
+    }
+
+    return this.items().filter((item) => item.shopIds.includes(shopId));
+  }
+
+  protected statEntries(stats: Record<string, unknown>): Array<[string, unknown]> {
+    return Object.entries(stats);
+  }
+
+  protected formatLabel(value: string): string {
+    return value.replace(/([A-Z])/g, ' $1').replace(/^./, (letter) => letter.toUpperCase());
+  }
+
+  protected formatRequirement(requirement: ItemRequirement): string {
+    return `${requirement.quantity}x ${this.formatLabel(requirement.itemId).replaceAll('-', ' ')}`;
   }
 
   protected markImageBroken(iconId: string): void {
@@ -50,5 +76,48 @@ export class App {
       .join('')
       .slice(0, 2)
       .toUpperCase();
+  }
+
+  private loadHeroes(): void {
+    this.gameDataService.getHeroes().subscribe({
+      next: (heroes) => {
+        this.heroes.set(heroes);
+        this.finishLoading();
+      },
+      error: () => {
+        this.errorMessage.set('Could not load heroes. Make sure Spring Boot is running on port 8081.');
+        this.finishLoading();
+      }
+    });
+  }
+
+  private loadItems(): void {
+    this.gameDataService.getItems().subscribe({
+      next: (items) => {
+        this.items.set(items);
+        this.finishLoading();
+      },
+      error: () => {
+        this.errorMessage.set('Could not load items. Make sure Spring Boot is running on port 8081.');
+        this.finishLoading();
+      }
+    });
+  }
+
+  private loadShops(): void {
+    this.gameDataService.getShops().subscribe({
+      next: (shops) => {
+        this.shops.set(shops);
+        this.finishLoading();
+      },
+      error: () => {
+        this.errorMessage.set('Could not load shops. Make sure Spring Boot is running on port 8081.');
+        this.finishLoading();
+      }
+    });
+  }
+
+  private finishLoading(): void {
+    this.isLoading.set(false);
   }
 }

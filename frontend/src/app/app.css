@@ -42,6 +42,32 @@ h1 {
   line-height: 1.6;
 }
 
+.view-switcher {
+  display: inline-flex;
+  gap: 4px;
+  margin-top: 22px;
+  padding: 4px;
+  border: 1px solid #d8d0c1;
+  border-radius: 8px;
+  background: #fffaf1;
+}
+
+.view-switcher button {
+  border: 0;
+  border-radius: 6px;
+  padding: 8px 14px;
+  color: #49566f;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.view-switcher button.active {
+  color: #ffffff;
+  background: #3559b8;
+}
+
 .state {
   margin: 24px 0 0;
   padding: 16px;
@@ -56,18 +82,58 @@ h1 {
   background: #fff3f3;
 }
 
-.hero-grid {
+.shop-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.shop-filter label {
+  color: #49566f;
+  font-weight: 700;
+}
+
+.shop-filter select {
+  min-width: min(320px, 100%);
+  border: 1px solid #d8d0c1;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #171a20;
+  background: #fffaf1;
+  font: inherit;
+}
+
+.hero-grid,
+.item-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
 }
 
-.hero-card {
+.hero-card,
+.item-card {
   min-width: 0;
   padding: 16px;
   border: 1px solid #d8d0c1;
   border-radius: 8px;
   background: #fffaf1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.item-card {
+  position: relative;
+  outline: none;
+}
+
+.item-card:focus {
+  border-color: #3559b8;
+}
+
+.item-main {
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -119,4 +185,72 @@ h2 {
   color: #3559b8;
   background: #eef2ff;
   font-size: 0.8rem;
+}
+
+.item-tooltip {
+  position: absolute;
+  z-index: 5;
+  left: 16px;
+  right: 16px;
+  top: calc(100% + 8px);
+  min-width: 240px;
+  padding: 14px;
+  border: 1px solid #2a2018;
+  border-radius: 8px;
+  color: #f8ead1;
+  background: #171a20;
+  box-shadow: 0 16px 28px rgb(23 26 32 / 28%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.item-card:hover .item-tooltip,
+.item-card:focus .item-tooltip,
+.item-card:focus-within .item-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.item-tooltip h3 {
+  margin: 0 0 8px;
+  color: #f4d28a;
+  font-size: 1rem;
+}
+
+.item-tooltip p {
+  margin: 0 0 12px;
+  color: #d9d1c2;
+  line-height: 1.45;
+}
+
+.item-tooltip dl {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.item-tooltip dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.item-tooltip dt {
+  color: #aeb7c8;
+}
+
+.item-tooltip dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.item-tooltip .requirements {
+  margin-top: 12px;
+  color: #f4d28a;
+}
+
+.requirements span + span::before {
+  content: ", ";
 }

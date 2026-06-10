@@ -1,0 +1,26 @@
+[
+  {
+    "id": "attribute-shop",
+    "name": "Attribute Shop"
+  },
+  {
+    "id": "utility-shop",
+    "name": "Utility Shop"
+  },
+  {
+    "id": "arcane-vault",
+    "name": "Arcane Vault"
+  },
+  {
+    "id": "ancient-of-wonders",
+    "name": "Ancient of Wonders"
+  },
+  {
+    "id": "tomb-of-relics",
+    "name": "Tomb of Relics"
+  },
+  {
+    "id": "voodoo-lounge",
+    "name": "Voodoo Lounge"
+  }
+]

@@ -1,0 +1,907 @@
+[
+  {
+    "id": "claws-of-attack-6",
+    "name": "Claws of Attack +6",
+    "itemClass": "Weapon",
+    "price": 450,
+    "bonuses": [
+      "+6 Damage"
+    ],
+    "description": "Increases the attack damage of the Hero by 6.",
+    "range": null,
+    "stats": {
+      "damage": 6
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNClawsOfAttack.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "ring-of-protection-2",
+    "name": "Ring of Protection +2",
+    "itemClass": "Armor",
+    "price": 300,
+    "bonuses": [
+      "+2 Armor"
+    ],
+    "description": "Increases the armor of the Hero by 2.",
+    "range": null,
+    "stats": {
+      "armor": 2
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNRingGreen.png",
+    "shopIds": [
+      "attribute-shop",
+      "utility-shop"
+    ]
+  },
+  {
+    "id": "potion-of-healing",
+    "name": "Potion of Healing",
+    "itemClass": "Consumable",
+    "price": 150,
+    "bonuses": [
+      "Restores 250 Health"
+    ],
+    "description": "Restores 250 health when used.",
+    "range": null,
+    "stats": {
+      "healing": 250
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNPotionGreenSmall.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "boots-of-speed",
+    "name": "Boots of Speed",
+    "itemClass": "Movement",
+    "price": 250,
+    "bonuses": [
+      "+60 Movement Speed"
+    ],
+    "description": "Increases the movement speed of the Hero.",
+    "range": null,
+    "stats": {
+      "movementSpeed": 60
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNBootsOfSpeed.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "scroll-of-town-portal",
+    "name": "Scroll of Town Portal",
+    "itemClass": "Consumable",
+    "price": 350,
+    "bonuses": [],
+    "description": "Teleports the Hero and nearby friendly units to a friendly town hall.",
+    "range": null,
+    "stats": {
+      "charges": 1
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNScrollOfTownPortal.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "gauntlets-of-ogre-strength",
+    "name": "Gauntlets of Ogre Strength",
+    "itemClass": "Attribute",
+    "price": 300,
+    "bonuses": [
+      "+3 Strength"
+    ],
+    "description": "Increases the Strength of the Hero by 3.",
+    "range": null,
+    "stats": {
+      "strength": 3
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNGauntletsOfOgrePower.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "slippers-of-agility",
+    "name": "Slippers of Agility",
+    "itemClass": "Attribute",
+    "price": 300,
+    "bonuses": [
+      "+3 Agility"
+    ],
+    "description": "Increases the Agility of the Hero by 3.",
+    "range": null,
+    "stats": {
+      "agility": 3
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNSlippersOfAgility.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "mantle-of-intelligence",
+    "name": "Mantle of Intelligence",
+    "itemClass": "Attribute",
+    "price": 300,
+    "bonuses": [
+      "+3 Intelligence"
+    ],
+    "description": "Increases the Intelligence of the Hero by 3.",
+    "range": null,
+    "stats": {
+      "intelligence": 3
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNMantleOfIntelligence.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "circlet-of-nobility",
+    "name": "Circlet of Nobility",
+    "itemClass": "Attribute",
+    "price": 350,
+    "bonuses": [
+      "+2 All Stats"
+    ],
+    "description": "Increases Strength, Agility, and Intelligence of the Hero by 2.",
+    "range": null,
+    "stats": {
+      "allStats": 2,
+      "strength": 2,
+      "agility": 2,
+      "intelligence": 2
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNCirclet.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "belt-of-giant-strength",
+    "name": "Belt of Giant Strength",
+    "itemClass": "Attribute",
+    "price": 1000,
+    "bonuses": [
+      "+8 Strength"
+    ],
+    "description": "Increases the Strength of the Hero by 8 when worn.",
+    "range": null,
+    "stats": {
+      "strength": 8
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNBelt.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "boots-of-quelthalas",
+    "name": "Boots of Quel'Thalas",
+    "itemClass": "Attribute",
+    "price": 1000,
+    "bonuses": [
+      "+8 Agility"
+    ],
+    "description": "Increases the Agility of the Hero by 8 when worn.",
+    "range": null,
+    "stats": {
+      "agility": 8
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNBoots.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "robe-of-the-magi",
+    "name": "Robe of the Magi",
+    "itemClass": "Attribute",
+    "price": 450,
+    "bonuses": [
+      "+5 Intelligence"
+    ],
+    "description": "Increases the Intelligence of the Hero by 5 when worn.",
+    "range": null,
+    "stats": {
+      "intelligence": 5
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNRobeOfTheMagi.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "crown-of-kings",
+    "name": "Crown of Kings",
+    "itemClass": "Attribute",
+    "price": 1050,
+    "bonuses": [
+      "+5 All Stats"
+    ],
+    "description": "Increases the Strength, Agility, and Intelligence of the Hero by 5 when worn.",
+    "range": null,
+    "stats": {
+      "strength": 5,
+      "agility": 5,
+      "intelligence": 5
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHelmutPurple.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "ruby",
+    "name": "Ruby",
+    "itemClass": "Recipe",
+    "price": 300,
+    "bonuses": [
+      "+18 Strength",
+      "+180 Maximum Health"
+    ],
+    "description": "Grants +18 Strength and +180 maximum health.",
+    "range": null,
+    "stats": {
+      "strength": 18,
+      "maxHealth": 180
+    },
+    "requirements": [
+      {
+        "itemId": "belt-of-giant-strength",
+        "quantity": 2
+      },
+      {
+        "itemId": "periapt-of-vitality",
+        "quantity": 1
+      }
+    ],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNEnchantedGemstone.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "emerald",
+    "name": "Emerald",
+    "itemClass": "Recipe",
+    "price": 300,
+    "bonuses": [
+      "+18 Agility",
+      "+180 Maximum Health"
+    ],
+    "description": "Grants +18 Agility and +180 maximum health.",
+    "range": null,
+    "stats": {
+      "agility": 18,
+      "maxHealth": 180
+    },
+    "requirements": [
+      {
+        "itemId": "boots-of-quelthalas",
+        "quantity": 2
+      },
+      {
+        "itemId": "periapt-of-vitality",
+        "quantity": 1
+      }
+    ],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNGem.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "sapphire",
+    "name": "Sapphire",
+    "itemClass": "Recipe",
+    "price": 300,
+    "bonuses": [
+      "+18 Intelligence",
+      "+120 Maximum Mana"
+    ],
+    "description": "Grants +18 Intelligence and +120 maximum mana.",
+    "range": null,
+    "stats": {
+      "intelligence": 18,
+      "maxMana": 120
+    },
+    "requirements": [
+      {
+        "itemId": "robe-of-the-magi",
+        "quantity": 2
+      },
+      {
+        "itemId": "pendant-of-energy",
+        "quantity": 1
+      }
+    ],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNGem.png",
+    "shopIds": [
+      "attribute-shop"
+    ]
+  },
+  {
+    "id": "periapt-of-vitality",
+    "name": "Periapt of Vitality",
+    "itemClass": "Attribute",
+    "price": 400,
+    "bonuses": [
+      "+120 Maximum Health"
+    ],
+    "description": "Increases the maximum health of the Hero by 120.",
+    "range": null,
+    "stats": {
+      "maxHealth": 120
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNPeriapt1.png",
+    "shopIds": [
+      "utility-shop"
+    ]
+  },
+  {
+    "id": "pendant-of-energy",
+    "name": "Pendant of Energy",
+    "itemClass": "Attribute",
+    "price": 375,
+    "bonuses": [
+      "+80 Maximum Mana"
+    ],
+    "description": "Increases the maximum mana of the Hero by 80.",
+    "range": null,
+    "stats": {
+      "maxMana": 80
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNPendantOfEnergy.png",
+    "shopIds": [
+      "utility-shop"
+    ]
+  },
+  {
+    "id": "claws-of-attack-3",
+    "name": "Claws of Attack +3",
+    "itemClass": "Weapon",
+    "price": 375,
+    "bonuses": [
+      "+3 Damage"
+    ],
+    "description": "Increases the attack damage of the Hero by 3.",
+    "range": null,
+    "stats": {
+      "damage": 3
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNClawsOfAttack.png",
+    "shopIds": [
+      "utility-shop"
+    ]
+  },
+  {
+    "id": "periapt-of-health",
+    "name": "Periapt of Health",
+    "itemClass": "Attribute",
+    "price": 1200,
+    "bonuses": [
+      "+300 Maximum Health"
+    ],
+    "description": "Increases the maximum health of the Hero by 300.",
+    "range": null,
+    "stats": {
+      "maxHealth": 300
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNPeriapt3.png",
+    "shopIds": [
+      "utility-shop"
+    ]
+  },
+  {
+    "id": "pendant-of-mana",
+    "name": "Pendant of Mana",
+    "itemClass": "Attribute",
+    "price": 1125,
+    "bonuses": [
+      "+200 Maximum Mana"
+    ],
+    "description": "Increases the maximum mana of the Hero by 200.",
+    "range": null,
+    "stats": {
+      "maxMana": 200
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNPendantOfMana.png",
+    "shopIds": [
+      "utility-shop"
+    ]
+  },
+  {
+    "id": "claws-of-attack-8",
+    "name": "Claws of Attack +8",
+    "itemClass": "Weapon",
+    "price": 1200,
+    "bonuses": [
+      "+8 Damage"
+    ],
+    "description": "Increases the attack damage of the Hero by 8.",
+    "range": null,
+    "stats": {
+      "damage": 8
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNClawsOfAttack.png",
+    "shopIds": [
+      "utility-shop"
+    ]
+  },
+  {
+    "id": "ring-of-protection-5",
+    "name": "Ring of Protection +5",
+    "itemClass": "Armor",
+    "price": 1050,
+    "bonuses": [
+      "+5 Armor"
+    ],
+    "description": "Increases the armor of the Hero by 5.",
+    "range": null,
+    "stats": {
+      "armor": 5
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNRingGreen.png",
+    "shopIds": [
+      "utility-shop"
+    ]
+  },
+  {
+    "id": "gloves-of-haste",
+    "name": "Gloves of Haste",
+    "itemClass": "Weapon",
+    "price": 300,
+    "bonuses": [
+      "-0.02 sec Base Attack Cooldown"
+    ],
+    "description": "Reduces the base attack cooldown of the Hero by 0.02 seconds.",
+    "range": null,
+    "stats": {
+      "baseAttackCooldownReduction": 0.02
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNGlove.png",
+    "shopIds": [
+      "utility-shop"
+    ]
+  },
+  {
+    "id": "hyper-bracers",
+    "name": "Hyper Bracers",
+    "itemClass": "Weapon",
+    "price": 900,
+    "bonuses": [
+      "-0.05 sec Base Attack Cooldown"
+    ],
+    "description": "Reduces the base attack cooldown of the Hero by 0.05 seconds.",
+    "range": null,
+    "stats": {
+      "baseAttackCooldownReduction": 0.05
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNBracers.png",
+    "shopIds": [
+      "utility-shop"
+    ]
+  },
+  {
+    "id": "sobi-mask",
+    "name": "Sobi Mask",
+    "itemClass": "Attribute",
+    "price": 325,
+    "bonuses": [
+      "+30% Mana Regeneration"
+    ],
+    "description": "Increases the mana regeneration of the Hero by 30%.",
+    "range": null,
+    "stats": {
+      "manaRegenerationPercent": 30
+    },
+    "requirements": [],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNSobiMask.png",
+    "shopIds": [
+      "utility-shop"
+    ]
+  },
+  {
+    "id": "maul-of-strength",
+    "name": "Maul of Strength",
+    "itemClass": "Recipe",
+    "price": 350,
+    "bonuses": [
+      "+5 Strength",
+      "+4 Damage",
+      "+150 Maximum Health"
+    ],
+    "description": "Grants +5 Strength, +4 damage, and +150 maximum health.",
+    "range": null,
+    "stats": {
+      "strength": 5,
+      "damage": 4,
+      "maxHealth": 150
+    },
+    "requirements": [
+      {
+        "itemId": "gauntlets-of-ogre-strength",
+        "quantity": 1
+      },
+      {
+        "itemId": "claws-of-attack-3",
+        "quantity": 1
+      },
+      {
+        "itemId": "periapt-of-vitality",
+        "quantity": 1
+      }
+    ],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNStormHammer.png",
+    "shopIds": [
+      "arcane-vault"
+    ]
+  },
+  {
+    "id": "spider-ring",
+    "name": "Spider Ring",
+    "itemClass": "Recipe",
+    "price": 350,
+    "bonuses": [
+      "+5 Agility",
+      "+4 Damage",
+      "-0.025 sec Base Attack Cooldown"
+    ],
+    "description": "Grants +5 Agility, +4 damage, and reduces base attack cooldown by 0.025 seconds.",
+    "range": null,
+    "stats": {
+      "agility": 5,
+      "damage": 4,
+      "baseAttackCooldownReduction": 0.025
+    },
+    "requirements": [
+      {
+        "itemId": "slippers-of-agility",
+        "quantity": 1
+      },
+      {
+        "itemId": "claws-of-attack-3",
+        "quantity": 1
+      },
+      {
+        "itemId": "gloves-of-haste",
+        "quantity": 1
+      }
+    ],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNRingPurple.png",
+    "shopIds": [
+      "arcane-vault"
+    ]
+  },
+  {
+    "id": "ancient-figurine",
+    "name": "Ancient Figurine",
+    "itemClass": "Recipe",
+    "price": 350,
+    "bonuses": [
+      "+5 Intelligence",
+      "+100 Maximum Mana",
+      "+40% Mana Regeneration"
+    ],
+    "description": "Grants +5 Intelligence, +100 maximum mana, and +40% mana regeneration.",
+    "range": null,
+    "stats": {
+      "intelligence": 5,
+      "maxMana": 100,
+      "manaRegenerationPercent": 40
+    },
+    "requirements": [
+      {
+        "itemId": "mantle-of-intelligence",
+        "quantity": 1
+      },
+      {
+        "itemId": "pendant-of-energy",
+        "quantity": 1
+      },
+      {
+        "itemId": "sobi-mask",
+        "quantity": 1
+      }
+    ],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNClayFigurine.png",
+    "shopIds": [
+      "arcane-vault"
+    ]
+  },
+  {
+    "id": "steel-sword",
+    "name": "Steel Sword",
+    "itemClass": "Recipe",
+    "price": 375,
+    "bonuses": [
+      "+3 All Stats",
+      "+5 Damage",
+      "-0.02 sec Base Attack Cooldown"
+    ],
+    "description": "Grants +3 Strength, +3 Agility, +3 Intelligence, +5 damage, and reduces base attack cooldown by 0.02 seconds.",
+    "range": null,
+    "stats": {
+      "allStats": 3,
+      "strength": 3,
+      "agility": 3,
+      "intelligence": 3,
+      "damage": 5,
+      "baseAttackCooldownReduction": 0.02
+    },
+    "requirements": [
+      {
+        "itemId": "circlet-of-nobility",
+        "quantity": 1
+      },
+      {
+        "itemId": "claws-of-attack-3",
+        "quantity": 1
+      },
+      {
+        "itemId": "gloves-of-haste",
+        "quantity": 1
+      }
+    ],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNSteelMelee.png",
+    "shopIds": [
+      "arcane-vault"
+    ]
+  },
+  {
+    "id": "heavy-boots",
+    "name": "Heavy Boots",
+    "itemClass": "Recipe",
+    "price": 400,
+    "bonuses": [
+      "+6 Strength",
+      "+150 Maximum Health",
+      "+20 Movement Speed",
+      "-4 Damage",
+      "Teleport (active): teleports to a friendly structure.",
+      "Cooldown: 60 sec"
+    ],
+    "description": "Grants +6 Strength, +150 maximum health, +20 movement speed, and -4 damage. Active: teleports to a friendly structure. Cooldown: 60 seconds. Upgradeable to Invigorated Heavy Boots at level 30.",
+    "range": null,
+    "stats": {
+      "strength": 6,
+      "maxHealth": 150,
+      "movementSpeed": 20,
+      "damage": -4,
+      "teleportCooldown": 60
+    },
+    "requirements": [
+      {
+        "itemId": "gauntlets-of-ogre-strength",
+        "quantity": 1
+      },
+      {
+        "itemId": "periapt-of-vitality",
+        "quantity": 1
+      }
+    ],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNBootsOfSpeed.png",
+    "shopIds": [
+      "arcane-vault"
+    ]
+  },
+  {
+    "id": "light-boots",
+    "name": "Light Boots",
+    "itemClass": "Recipe",
+    "price": 400,
+    "bonuses": [
+      "+6 Agility",
+      "+150 Maximum Health",
+      "+20 Movement Speed",
+      "+4 Damage",
+      "Teleport (active): teleports to a friendly structure.",
+      "Cooldown: 60 sec"
+    ],
+    "description": "Grants +6 Agility, +150 maximum health, +20 movement speed, and +4 damage. Active: teleports to a friendly structure. Cooldown: 60 seconds. Upgradeable to Invigorated Light Boots at level 30.",
+    "range": null,
+    "stats": {
+      "agility": 6,
+      "maxHealth": 150,
+      "movementSpeed": 20,
+      "damage": 4,
+      "teleportCooldown": 60
+    },
+    "requirements": [
+      {
+        "itemId": "slippers-of-agility",
+        "quantity": 1
+      },
+      {
+        "itemId": "periapt-of-vitality",
+        "quantity": 1
+      }
+    ],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNBoots.png",
+    "shopIds": [
+      "arcane-vault"
+    ]
+  },
+  {
+    "id": "bracer-of-protection",
+    "name": "Bracer of Protection",
+    "itemClass": "Recipe",
+    "price": 300,
+    "bonuses": [
+      "+3 Armor",
+      "+3 All Stats",
+      "+150 Maximum Health"
+    ],
+    "description": "Grants +3 armor, +3 Strength, +3 Agility, +3 Intelligence, and +150 maximum health.",
+    "range": null,
+    "stats": {
+      "armor": 3,
+      "allStats": 3,
+      "strength": 3,
+      "agility": 3,
+      "intelligence": 3,
+      "maxHealth": 150
+    },
+    "requirements": [
+      {
+        "itemId": "circlet-of-nobility",
+        "quantity": 1
+      },
+      {
+        "itemId": "ring-of-protection-2",
+        "quantity": 1
+      },
+      {
+        "itemId": "periapt-of-vitality",
+        "quantity": 1
+      }
+    ],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNBracers.png",
+    "shopIds": [
+      "arcane-vault"
+    ]
+  },
+  {
+    "id": "plated-boots",
+    "name": "Plated Boots",
+    "itemClass": "Recipe",
+    "price": 400,
+    "bonuses": [
+      "+3 Armor",
+      "+250 Maximum Health",
+      "+20 Movement Speed",
+      "-10% Attack Speed",
+      "Teleport (active): teleports to a friendly structure.",
+      "Cooldown: 60 sec"
+    ],
+    "description": "Grants +3 armor, +250 maximum health, +20 movement speed, and -10% attack speed. Active: teleports to a friendly structure. Cooldown: 60 seconds. Upgradeable to Invigorated Plated Boots at level 30.",
+    "range": null,
+    "stats": {
+      "armor": 3,
+      "maxHealth": 250,
+      "movementSpeed": 20,
+      "attackSpeedPercent": -10,
+      "teleportCooldown": 60
+    },
+    "requirements": [
+      {
+        "itemId": "ring-of-protection-2",
+        "quantity": 1
+      },
+      {
+        "itemId": "periapt-of-vitality",
+        "quantity": 1
+      }
+    ],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNBootsOfQuelthalas.png",
+    "shopIds": [
+      "arcane-vault"
+    ]
+  },
+  {
+    "id": "fencing-boots",
+    "name": "Fencing Boots",
+    "itemClass": "Recipe",
+    "price": 400,
+    "bonuses": [
+      "+6 Damage",
+      "+150 Maximum Health",
+      "+20 Movement Speed",
+      "-3 All Stats",
+      "Teleport (active): teleports to a friendly structure.",
+      "Cooldown: 60 sec"
+    ],
+    "description": "Grants +6 damage, +150 maximum health, +20 movement speed, and -3 Strength, -3 Agility, and -3 Intelligence. Active: teleports to a friendly structure. Cooldown: 60 seconds. Upgradeable to Invigorated Fencing Boots at level 30.",
+    "range": null,
+    "stats": {
+      "damage": 6,
+      "maxHealth": 150,
+      "movementSpeed": 20,
+      "allStats": -3,
+      "strength": -3,
+      "agility": -3,
+      "intelligence": -3,
+      "teleportCooldown": 60
+    },
+    "requirements": [
+      {
+        "itemId": "claws-of-attack-3",
+        "quantity": 1
+      },
+      {
+        "itemId": "periapt-of-vitality",
+        "quantity": 1
+      }
+    ],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNBootsOfSpeed.png",
+    "shopIds": [
+      "arcane-vault"
+    ]
+  },
+  {
+    "id": "eternity-boots",
+    "name": "Eternity Boots",
+    "itemClass": "Recipe",
+    "price": 400,
+    "bonuses": [
+      "+6 Intelligence",
+      "+150 Maximum Health",
+      "+20 Movement Speed",
+      "-50 Maximum Mana",
+      "Teleport (active): teleports to a friendly structure.",
+      "Cooldown: 60 sec"
+    ],
+    "description": "Grants +6 Intelligence, +150 maximum health, +20 movement speed, and -50 maximum mana. Active: teleports to a friendly structure. Cooldown: 60 seconds. Upgradeable to Invigorated Eternity Boots at level 30.",
+    "range": null,
+    "stats": {
+      "intelligence": 6,
+      "maxHealth": 150,
+      "movementSpeed": 20,
+      "maxMana": -50,
+      "teleportCooldown": 60
+    },
+    "requirements": [
+      {
+        "itemId": "mantle-of-intelligence",
+        "quantity": 1
+      },
+      {
+        "itemId": "periapt-of-vitality",
+        "quantity": 1
+      }
+    ],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNBoots.png",
+    "shopIds": [
+      "arcane-vault"
+    ]
+  }
+]
