@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "backend: run Spring Boot",
+      "type": "shell",
+      "command": ".\\mvnw.cmd spring-boot:run",
+      "group": "build",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "frontend: run Angular",
+      "type": "shell",
+      "command": "npm start",
+      "group": "build",
+      "problemMatcher": [],
+      "options": {
+        "cwd": "${workspaceFolder}\\frontend"
+      }
+    },
+    {
+      "label": "dev: run backend and frontend",
+      "dependsOrder": "parallel",
+      "dependsOn": [
+        "backend: run Spring Boot",
+        "frontend: run Angular"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}
