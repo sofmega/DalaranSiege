@@ -1,0 +1,44 @@
+[
+  {
+    "id": "arthas",
+    "name": "Arthas",
+    "heroClass": "Death Knight",
+    "roles": ["Spell Damage Dealer", "Tank"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHeroDeathKnight.png"
+  },
+  {
+    "id": "thrall",
+    "name": "Thrall",
+    "heroClass": "shaman",
+    "roles": ["Spell Damage Dealer", "Healer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNThrall.png"
+  },
+  {
+    "id": "jaina",
+    "name": "Jaina",
+    "heroClass": "Mage",
+    "roles": ["Spell Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNJaina.png"
+  },
+  {
+    "id": "paladin",
+    "name": "Sir Gregory",
+    "heroClass": "Paladin",
+    "roles": ["Melee Damage Dealer", "Tank"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNUther.png"
+  },
+  {
+    "id": "blademaster",
+    "name": "Samuro",
+    "heroClass": "Blademaster",
+    "roles": ["Melee Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHeroBlademaster.png"
+  },
+  {
+    "id": "tauren-chieftain",
+    "name": "Cairne Bloodhoof",
+    "heroClass": "Tauren Chieftain",
+    "roles": ["Tank", "Melee Damage Dealer"],
+    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHeroTaurenChieftain.png"
+  }
+]

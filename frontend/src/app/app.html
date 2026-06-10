@@ -1,16 +1,41 @@
 <main class="page">
-  <section class="hero">
-    <p class="eyebrow">DalaranS</p>
-    <h1>Angular frontend + Spring Boot backend</h1>
-    <p class="summary">
-      This workspace is ready for full-stack development. Angular runs on port 4200,
-      Spring Boot runs on port 8080, and API calls are proxied through the Angular dev server.
-    </p>
-
-    <div class="status">
-      <span class="status-label">Backend status</span>
-      <strong>{{ apiMessage() }}</strong>
-      <small>{{ apiTimestamp() }}</small>
-    </div>
+  <section class="header">
+    <p class="eyebrow">DalaranSiege</p>
+    <h1>Heroes</h1>
+    <p class="summary">Hero data loaded from the Spring Boot backend.</p>
   </section>
+
+  @if (isLoading()) {
+    <p class="state">Loading heroes...</p>
+  } @else if (errorMessage()) {
+    <p class="state error">{{ errorMessage() }}</p>
+  } @else {
+    <section class="hero-grid" aria-label="Dalaran Siege hero list">
+      @for (hero of heroes(); track hero.id) {
+        <article class="hero-card">
+          <div class="hero-icon">
+            @if (!isImageBroken(hero.id)) {
+              <img
+                [src]="hero.iconUrl"
+                [alt]="hero.name + ' icon'"
+                (error)="markImageBroken(hero.id)"
+              />
+            } @else {
+              <span>{{ initials(hero.name) }}</span>
+            }
+          </div>
+
+          <div class="hero-details">
+            <h2>{{ hero.name }}</h2>
+            <p class="hero-class">{{ hero.heroClass }}</p>
+            <div class="roles" aria-label="Hero roles">
+              @for (role of hero.roles; track role) {
+                <span>{{ role }}</span>
+              }
+            </div>
+          </div>
+        </article>
+      }
+    </section>
+  }
 </main>
