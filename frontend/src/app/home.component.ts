@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GameDataService, HeroDto, ItemDto, ItemRequirement, Shop } from './game-data.service';
+import { SupabaseAuthService } from './supabase-auth.service';
 
 type ViewMode = 'heroes' | 'items';
 
@@ -10,7 +11,9 @@ type ViewMode = 'heroes' | 'items';
   templateUrl: './home.component.html'
 })
 export class HomeComponent {
+  private readonly route = inject(ActivatedRoute);
   private readonly gameDataService = inject(GameDataService);
+  protected readonly authService = inject(SupabaseAuthService);
 
   protected readonly activeView = signal<ViewMode>('heroes');
   protected readonly heroes = signal<HeroDto[]>([]);
@@ -23,17 +26,17 @@ export class HomeComponent {
   private pendingRequests = 3;
 
   constructor() {
+    this.route.queryParamMap.subscribe((params) => {
+      this.activeView.set(params.get('view') === 'items' ? 'items' : 'heroes');
+    });
+
     this.loadHeroes();
     this.loadItems();
     this.loadShops();
   }
 
-  protected showHeroes(): void {
-    this.activeView.set('heroes');
-  }
-
-  protected showItems(): void {
-    this.activeView.set('items');
+  protected signOut(): void {
+    void this.authService.signOut();
   }
 
   protected selectShop(event: Event): void {

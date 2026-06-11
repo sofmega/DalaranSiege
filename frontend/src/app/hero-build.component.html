@@ -1,5 +1,22 @@
 <main class="page">
-  <a class="back-link" routerLink="/">Back to heroes</a>
+  <nav class="top-nav" aria-label="Primary navigation">
+    <a class="brand-link" routerLink="/">DalaranSiege</a>
+
+    <div class="nav-links">
+      <a routerLink="/" [queryParams]="{ view: 'heroes' }">Heroes</a>
+      <a routerLink="/" [queryParams]="{ view: 'items' }">Items</a>
+    </div>
+
+    <div class="account-bar nav-account" aria-label="Account">
+      @if (authService.isAuthenticated()) {
+        <span>{{ authService.displayName() }}</span>
+        <button type="button" class="secondary-button" (click)="signOut()">Logout</button>
+      } @else {
+        <span>Visitor</span>
+        <a class="secondary-link" routerLink="/auth">Login</a>
+      }
+    </div>
+  </nav>
 
   @if (isLoading()) {
     <p class="state">Loading hero build...</p>
@@ -36,40 +53,78 @@
       <button type="button" [class.active]="mode() === 'create'" (click)="showCreate()">Create Build</button>
     </div>
 
+    @if (authMessage()) {
+      <p class="state">{{ authMessage() }} <a routerLink="/auth">Login or register</a></p>
+    }
+
     @if (mode() === 'view') {
-      <section class="build-panel">
-        <div class="build-panel-header">
-          <div>
-            <p class="eyebrow">Current Build</p>
-            <h2>{{ buildName() }}</h2>
-          </div>
-          <button type="button" class="secondary-button" (click)="showCreate()">Edit</button>
-        </div>
-
-        <section class="build-items" aria-label="Selected build items">
-          @for (item of featuredItems(); track item.id) {
-            <article class="build-item">
-              <div class="hero-icon">
-                @if (!isImageBroken(item.id)) {
-                  <img
-                    [src]="item.iconUrl"
-                    [alt]="item.name + ' icon'"
-                    (error)="markImageBroken(item.id)"
-                  />
-                } @else {
-                  <span>{{ initials(item.name) }}</span>
-                }
-              </div>
+      <section class="build-list" aria-label="Public hero builds">
+        @for (build of builds(); track build.id) {
+          <article class="build-panel">
+            <div class="build-panel-header">
               <div>
-                <h3>{{ item.name }}</h3>
-                <p>{{ item.itemClass }} - {{ item.price }} gold</p>
+                <p class="eyebrow">Community Build</p>
+                <h2>{{ build.name }}</h2>
+                <p class="build-author">By {{ build.authorName }}</p>
               </div>
-            </article>
-          }
-        </section>
 
-        @if (notes()) {
-          <p class="build-notes">{{ notes() }}</p>
+              <div class="build-actions">
+                @if (isOwner(build)) {
+                  <button type="button" class="secondary-button" (click)="editBuild(build)">Edit</button>
+                  <button type="button" class="danger-button" (click)="deleteBuild(build)">Delete</button>
+                }
+
+                <div class="vote-panel" aria-label="Build votes">
+                  <button
+                    type="button"
+                    class="vote-button"
+                    [class.active]="build.currentUserVote === 1"
+                    (click)="vote(build, 1)"
+                    aria-label="Upvote build"
+                  >+</button>
+                  <strong>{{ build.score }}</strong>
+                  <button
+                    type="button"
+                    class="vote-button"
+                    [class.active]="build.currentUserVote === -1"
+                    (click)="vote(build, -1)"
+                    aria-label="Downvote build"
+                  >-</button>
+                  <span>{{ build.upvotes }} up / {{ build.downvotes }} down</span>
+                </div>
+              </div>
+            </div>
+
+            <section class="build-items" aria-label="Selected build items">
+              @for (item of buildItems(build); track item.id) {
+                <article class="build-item">
+                  <div class="hero-icon">
+                    @if (!isImageBroken(item.id)) {
+                      <img
+                        [src]="item.iconUrl"
+                        [alt]="item.name + ' icon'"
+                        (error)="markImageBroken(item.id)"
+                      />
+                    } @else {
+                      <span>{{ initials(item.name) }}</span>
+                    }
+                  </div>
+                  <div>
+                    <h3>{{ item.name }}</h3>
+                    <p>{{ item.itemClass }} - {{ item.price }} gold</p>
+                  </div>
+                </article>
+              }
+            </section>
+
+            @if (build.notes) {
+              <p class="build-notes">{{ build.notes }}</p>
+            }
+          </article>
+        } @empty {
+          <section class="build-panel">
+            <p class="state">No builds yet for this hero.</p>
+          </section>
         }
       </section>
     } @else {
@@ -87,7 +142,7 @@
         <div class="build-panel-header">
           <div>
             <p class="eyebrow">Items</p>
-            <h2>Select up to 6 items</h2>
+            <h2>{{ editingBuildId() ? 'Edit build items' : 'Select up to 6 items' }}</h2>
           </div>
           <p class="selection-count">{{ selectedItemIds().length }}/6 selected</p>
         </div>
@@ -116,7 +171,9 @@
           }
         </section>
 
-        <button type="button" class="primary-button" (click)="saveBuild()">Save Build</button>
+        <button type="button" class="primary-button" [disabled]="selectedItemIds().length === 0" (click)="saveBuild()">
+          {{ editingBuildId() ? 'Update Build' : 'Save Build' }}
+        </button>
       </section>
     }
   } @else {

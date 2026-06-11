@@ -3,5 +3,6 @@
 
 export const environment = {
   supabaseUrl: 'https://YOUR_PROJECT_REF.supabase.co',
+  supabasePublishableKey: 'YOUR_SUPABASE_PUBLISHABLE_KEY',
   supabaseAnonKey: 'YOUR_SUPABASE_ANON_KEY'
 };

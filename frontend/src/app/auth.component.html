@@ -1,0 +1,76 @@
+<main class="page auth-page">
+  <nav class="top-nav" aria-label="Primary navigation">
+    <a class="brand-link" routerLink="/">DalaranSiege</a>
+
+    <div class="nav-links">
+      <a routerLink="/" [queryParams]="{ view: 'heroes' }">Heroes</a>
+      <a routerLink="/" [queryParams]="{ view: 'items' }">Items</a>
+    </div>
+
+    <div class="account-bar nav-account" aria-label="Account">
+      @if (authService.isAuthenticated()) {
+        <span>{{ authService.displayName() }}</span>
+        <button type="button" class="secondary-button" (click)="signOut()">Logout</button>
+      } @else {
+        <span>Visitor</span>
+        <a class="secondary-link" routerLink="/auth">Login</a>
+      }
+    </div>
+  </nav>
+
+  <section class="auth-panel">
+    <p class="eyebrow">Account</p>
+    <h1>{{ mode() === 'login' ? 'Login' : 'Register' }}</h1>
+    <p class="summary">Login to create builds, vote, and comment. Visitors can still browse public data.</p>
+
+    <div class="view-switcher" aria-label="Authentication mode">
+      <button type="button" [class.active]="mode() === 'login'" (click)="showLogin()">Login</button>
+      <button type="button" [class.active]="mode() === 'register'" (click)="showRegister()">Register</button>
+    </div>
+
+    <form class="auth-form" (ngSubmit)="submit()">
+      <label class="field">
+        Email
+        <input type="email" autocomplete="email" [value]="email()" (input)="updateEmail($event)" required />
+      </label>
+
+      @if (mode() === 'register') {
+        <label class="field">
+          Username
+          <input
+            type="text"
+            autocomplete="username"
+            minlength="3"
+            maxlength="32"
+            [value]="username()"
+            (input)="updateUsername($event)"
+            required
+          />
+        </label>
+      }
+
+      <label class="field">
+        Password
+        <input
+          type="password"
+          autocomplete="current-password"
+          [value]="password()"
+          (input)="updatePassword($event)"
+          required
+        />
+      </label>
+
+      @if (errorMessage()) {
+        <p class="state error">{{ errorMessage() }}</p>
+      }
+
+      @if (message()) {
+        <p class="state">{{ message() }}</p>
+      }
+
+      <button type="submit" class="primary-button" [disabled]="isSubmitting()">
+        {{ isSubmitting() ? 'Please wait...' : mode() === 'login' ? 'Login' : 'Create Account' }}
+      </button>
+    </form>
+  </section>
+</main>

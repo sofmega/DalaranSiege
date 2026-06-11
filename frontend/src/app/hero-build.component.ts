@@ -1,15 +1,10 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { GameDataService, HeroDto, ItemDto } from './game-data.service';
+import { GameDataService, HeroBuildDto, HeroDto, ItemDto } from './game-data.service';
+import { SupabaseAuthService } from './supabase-auth.service';
 
 type BuildMode = 'view' | 'create';
-
-interface SavedBuild {
-  name: string;
-  itemIds: string[];
-  notes: string;
-}
 
 @Component({
   selector: 'app-hero-build',
@@ -19,37 +14,34 @@ interface SavedBuild {
 export class HeroBuildComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly gameDataService = inject(GameDataService);
+  protected readonly authService = inject(SupabaseAuthService);
   private readonly heroId = this.route.snapshot.paramMap.get('id') ?? '';
 
   protected readonly mode = signal<BuildMode>('view');
   protected readonly hero = signal<HeroDto | null>(null);
   protected readonly items = signal<ItemDto[]>([]);
+  protected readonly builds = signal<HeroBuildDto[]>([]);
   protected readonly isLoading = signal(true);
   protected readonly errorMessage = signal('');
   protected readonly brokenIconIds = signal(new Set<string>());
   protected readonly buildName = signal('');
   protected readonly selectedItemIds = signal<string[]>([]);
   protected readonly notes = signal('');
-  private pendingRequests = 2;
+  protected readonly authMessage = signal('');
+  protected readonly editingBuildId = signal<string | null>(null);
+  private pendingRequests = 3;
 
   protected readonly selectedItems = computed(() => {
     const selectedIds = new Set(this.selectedItemIds());
     return this.items().filter((item) => selectedIds.has(item.id));
   });
 
-  protected readonly featuredItems = computed(() => {
-    const chosen = this.selectedItems();
-
-    if (chosen.length) {
-      return chosen;
-    }
-
-    return this.items().slice(0, 6);
-  });
+  protected readonly itemById = computed(() => new Map(this.items().map((item) => [item.id, item])));
 
   constructor() {
     this.loadHero();
     this.loadItems();
+    this.loadBuilds();
   }
 
   protected showView(): void {
@@ -57,7 +49,36 @@ export class HeroBuildComponent {
   }
 
   protected showCreate(): void {
+    if (!this.authService.isAuthenticated()) {
+      this.authMessage.set('Login to create and save builds.');
+      this.mode.set('view');
+      return;
+    }
+
+    this.editingBuildId.set(null);
+    this.buildName.set(`${this.hero()?.name ?? 'Hero'} Build`);
+    this.selectedItemIds.set([]);
+    this.notes.set('');
+    this.authMessage.set('');
     this.mode.set('create');
+  }
+
+  protected editBuild(build: HeroBuildDto): void {
+    if (!this.isOwner(build)) {
+      return;
+    }
+
+    this.editingBuildId.set(build.id);
+    this.buildName.set(build.name);
+    this.selectedItemIds.set(build.itemIds);
+    this.notes.set(build.notes);
+    this.authMessage.set('');
+    this.mode.set('create');
+  }
+
+  protected signOut(): void {
+    void this.authService.signOut();
+    this.mode.set('view');
   }
 
   protected toggleItem(itemId: string): void {
@@ -86,16 +107,90 @@ export class HeroBuildComponent {
   }
 
   protected saveBuild(): void {
-    const savedBuild: SavedBuild = {
+    if (!this.authService.isAuthenticated()) {
+      this.authMessage.set('Login to create and save builds.');
+      this.mode.set('view');
+      return;
+    }
+
+    const editingBuildId = this.editingBuildId();
+    const request = {
       name: this.buildName().trim() || `${this.hero()?.name ?? 'Hero'} Build`,
       itemIds: this.selectedItemIds(),
       notes: this.notes().trim()
     };
 
-    localStorage.setItem(this.storageKey(), JSON.stringify(savedBuild));
-    this.buildName.set(savedBuild.name);
-    this.notes.set(savedBuild.notes);
-    this.mode.set('view');
+    const saveRequest = editingBuildId
+      ? this.gameDataService.updateBuild(editingBuildId, request)
+      : this.gameDataService.createBuild({
+      heroId: this.heroId,
+      ...request
+    });
+
+    saveRequest.subscribe({
+      next: (build) => {
+        this.builds.update((builds) => {
+          const withoutSaved = builds.filter((candidate) => candidate.id !== build.id);
+          return [build, ...withoutSaved].sort((a, b) => b.score - a.score || b.createdAt.localeCompare(a.createdAt));
+        });
+        this.buildName.set(`${this.hero()?.name ?? 'Hero'} Build`);
+        this.editingBuildId.set(null);
+        this.selectedItemIds.set([]);
+        this.notes.set('');
+        this.authMessage.set('');
+        this.mode.set('view');
+      },
+      error: (error) => {
+        this.authMessage.set(error?.error?.message ?? 'Could not save this build. Check that you are still logged in.');
+      }
+    });
+  }
+
+  protected deleteBuild(build: HeroBuildDto): void {
+    if (!this.isOwner(build)) {
+      return;
+    }
+
+    this.gameDataService.deleteBuild(build.id).subscribe({
+      next: () => {
+        this.builds.update((builds) => builds.filter((candidate) => candidate.id !== build.id));
+        this.authMessage.set('');
+      },
+      error: (error) => {
+        this.authMessage.set(error?.error?.message ?? 'Could not delete this build.');
+      }
+    });
+  }
+
+  protected vote(build: HeroBuildDto, vote: -1 | 1): void {
+    if (!this.authService.isAuthenticated()) {
+      this.authMessage.set('Login to vote on builds.');
+      return;
+    }
+
+    const nextVote = build.currentUserVote === vote ? 0 : vote;
+    this.gameDataService.voteBuild(build.id, nextVote).subscribe({
+      next: (updatedBuild) => {
+        this.builds.update((builds) => builds
+          .map((candidate) => candidate.id === updatedBuild.id ? updatedBuild : candidate)
+          .sort((a, b) => b.score - a.score || b.createdAt.localeCompare(a.createdAt)));
+        this.authMessage.set('');
+      },
+      error: () => {
+        this.authMessage.set('Could not save your vote. Check that you are still logged in.');
+      }
+    });
+  }
+
+  protected buildItems(build: HeroBuildDto): ItemDto[] {
+    const itemById = this.itemById();
+    return build.itemIds
+      .map((itemId) => itemById.get(itemId))
+      .filter((item): item is ItemDto => item !== undefined);
+  }
+
+  protected isOwner(build: HeroBuildDto): boolean {
+    return this.authService.userId() === build.authorId;
   }
 
   protected isSelected(itemId: string): boolean {
@@ -125,7 +220,6 @@ export class HeroBuildComponent {
         const hero = heroes.find((candidate) => candidate.id === this.heroId) ?? null;
         this.hero.set(hero);
         this.buildName.set(`${hero?.name ?? 'Hero'} Build`);
-        this.restoreBuild();
         this.finishLoading();
       },
       error: () => {
@@ -139,7 +233,6 @@ export class HeroBuildComponent {
     this.gameDataService.getItems().subscribe({
       next: (items) => {
         this.items.set(items);
-        this.restoreBuild();
         this.finishLoading();
       },
       error: () => {
@@ -149,21 +242,17 @@ export class HeroBuildComponent {
     });
   }
 
-  private restoreBuild(): void {
-    const saved = localStorage.getItem(this.storageKey());
-
-    if (!saved) {
-      return;
-    }
-
-    try {
-      const build = JSON.parse(saved) as SavedBuild;
-      this.buildName.set(build.name);
-      this.selectedItemIds.set(build.itemIds ?? []);
-      this.notes.set(build.notes ?? '');
-    } catch {
-      localStorage.removeItem(this.storageKey());
-    }
+  private loadBuilds(): void {
+    this.gameDataService.getBuilds(this.heroId).subscribe({
+      next: (builds) => {
+        this.builds.set(builds);
+        this.finishLoading();
+      },
+      error: () => {
+        this.errorMessage.set('Could not load hero builds.');
+        this.finishLoading();
+      }
+    });
   }
 
   private finishLoading(): void {
@@ -172,9 +261,5 @@ export class HeroBuildComponent {
     if (this.pendingRequests <= 0 || this.errorMessage()) {
       this.isLoading.set(false);
     }
-  }
-
-  private storageKey(): string {
-    return `dalaran-build:${this.heroId}`;
   }
 }

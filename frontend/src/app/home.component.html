@@ -1,13 +1,33 @@
 <main class="page">
-  <section class="header">
-    <p class="eyebrow">DalaranSiege</p>
-    <h1>{{ activeView() === 'heroes' ? 'Heroes' : 'Items' }}</h1>
-    <p class="summary">Game data loaded from the Spring Boot backend.</p>
+  <nav class="top-nav" aria-label="Primary navigation">
+    <a class="brand-link" routerLink="/">DalaranSiege</a>
 
-    <div class="view-switcher" aria-label="Data view">
-      <button type="button" [class.active]="activeView() === 'heroes'" (click)="showHeroes()">Heroes</button>
-      <button type="button" [class.active]="activeView() === 'items'" (click)="showItems()">Items</button>
+    <div class="nav-links">
+      <a
+        routerLink="/"
+        [queryParams]="{ view: 'heroes' }"
+        [class.active]="activeView() === 'heroes'"
+      >Heroes</a>
+      <a
+        routerLink="/"
+        [queryParams]="{ view: 'items' }"
+        [class.active]="activeView() === 'items'"
+      >Items</a>
     </div>
+
+    <div class="account-bar nav-account" aria-label="Account">
+      @if (authService.isAuthenticated()) {
+        <span>{{ authService.displayName() }}</span>
+        <button type="button" class="secondary-button" (click)="signOut()">Logout</button>
+      } @else {
+        <span>Visitor</span>
+        <a class="secondary-link" routerLink="/auth">Login</a>
+      }
+    </div>
+  </nav>
+
+  <section class="header">
+    <h1>{{ activeView() === 'heroes' ? 'Heroes' : 'Items' }}</h1>
   </section>
 
   @if (isLoading()) {

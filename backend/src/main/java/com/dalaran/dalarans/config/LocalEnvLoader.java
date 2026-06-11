@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-final class LocalEnvLoader {
+public final class LocalEnvLoader {
 
     private LocalEnvLoader() {
     }
 
-    static void load(Path envPath) {
+    public static void load(Path envPath) {
         if (!Files.isRegularFile(envPath)) {
             return;
         }
