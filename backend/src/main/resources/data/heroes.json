@@ -4,125 +4,125 @@
     "name": "Arthas",
     "heroClass": "Death Knight",
     "roles": ["Spell Damage Dealer", "Tank"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHeroDeathKnight.png"
+    "iconUrl": "/icons/BTNHeroDeathKnight.png"
   },
   {
     "id": "shaman",
     "name": "Thrall",
     "heroClass": "shaman",
     "roles": ["Spell Damage Dealer", "Healer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNThrall.png"
+    "iconUrl": "/icons/BTNThrall.png"
   },
   {
     "id": "mage",
     "name": "Jaina",
     "heroClass": "Mage",
     "roles": ["Spell Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNJaina.png"
+    "iconUrl": "/icons/BTNJaina.png"
   },
   {
     "id": "paladin",
     "name": "Sir Gregory",
     "heroClass": "Paladin",
     "roles": ["Melee Damage Dealer", "Tank"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNUther.png"
+    "iconUrl": "/icons/BTNTheCaptain.png"
   },
   {
     "id": "blademaster",
     "name": "Samuro",
     "heroClass": "Blademaster",
     "roles": ["Melee Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHeroBlademaster.png"
+    "iconUrl": "/icons/BTNHeroBlademaster.png"
   },
   {
     "id": "tauren-chieftain",
     "name": "Cairne Bloodhoof",
     "heroClass": "Tauren Chieftain",
     "roles": ["Tank", "Melee Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHeroTaurenChieftain.png"
+    "iconUrl": "/icons/BTNHeroTaurenChieftain.png"
   },
   {
     "id": "monk",
     "name": "Chen Stormstout",
     "heroClass": "Monk",
     "roles": ["Melee Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNPandarenBrewmaster.png"
+    "iconUrl": "/icons/BTNPandarenBrewmaster.png"
   },
   {
     "id": "shadow-hunter",
     "name": "Rokhan",
     "heroClass": "Shadow Hunter",
     "roles": ["Spell Damage Dealer", "Healer", "Ranged Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNShadowHunter.png"
+    "iconUrl": "/icons/BTNShadowHunter.png"
   },
   {
     "id": "sea-witch",
     "name": "Lady Vashj",
     "heroClass": "Sea Witch",
     "roles": ["Spell Damage Dealer", "Ranged Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNNagaSeaWitch.png"
+    "iconUrl": "/icons/BTNNagaSeaWitch.png"
   },
   {
     "id": "warlord",
     "name": "Grommash Hellscream",
     "heroClass": "Warlord",
     "roles": ["Melee Damage Dealer", "Tank"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHellScream.png"
+    "iconUrl": "/icons/BTNHellScream.png"
   },
   {
     "id": "warrior",
     "name": "Taelan Fordring",
     "heroClass": "Warrior",
     "roles": ["Melee Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNGarithos.png"
+    "iconUrl": "/icons/BTNGarithos.png"
   },
   {
     "id": "assassin",
     "name": "Shadowsong",
     "heroClass": "Assassin",
     "roles": ["Melee Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHeroDemonHunter.png"
+    "iconUrl": "/icons/BTNHeroDemonHunter.png"
   },
   {
     "id": "ranger",
     "name": "Sylvanas Windrunner",
     "heroClass": "Ranger",
     "roles": ["Ranged Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNSylvanusWindRunner.png"
+    "iconUrl": "/icons/BTNSylvanusWindRunner.png"
   },
   {
     "id": "huntress",
     "name": "Naisha",
     "heroClass": "Huntress",
     "roles": ["Ranged Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNHuntress.png"
+    "iconUrl": "/icons/BTNHuntress.png"
   },
   {
     "id": "marksman",
     "name": "Magni Bronzebeard",
     "heroClass": "Marksman",
     "roles": ["Ranged Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNRifleman.png"
+    "iconUrl": "/icons/BTNRifleman.png"
   },
   {
     "id": "warlock",
     "name": "kel'Thuzad",
     "heroClass": "Warlock",
     "roles": ["Spell Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNLichVersion2.png"
+    "iconUrl": "/icons/BTNLichVersion2.png"
   },
   {
     "id": "priest",
     "name": "Anduin Wrynn",
     "heroClass": "Priest",
     "roles": ["Healer", "Spell Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNPriest.png"
+    "iconUrl": "/icons/BTNPriest.png"
   },
   {
     "id": "druid",
     "name": "Furion",
     "heroClass": "Druid",
     "roles": ["Healer", "Spell Damage Dealer", "Tank", "Melee Damage Dealer"],
-    "iconUrl": "https://warcraft.wiki.gg/wiki/Special:Redirect/file/BTNFurion.png"
+    "iconUrl": "/icons/BTNFurion.png"
   }
   ]
