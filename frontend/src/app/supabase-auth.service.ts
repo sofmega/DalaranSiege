@@ -74,6 +74,15 @@ export class SupabaseAuthService {
     return this.client.auth.signInWithPassword({ email, password });
   }
 
+  async signInWithGoogle() {
+    return this.client.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin
+      }
+    });
+  }
+
   async signOut() {
     await this.client.auth.signOut();
     this.state.set({ session: null, isReady: true });

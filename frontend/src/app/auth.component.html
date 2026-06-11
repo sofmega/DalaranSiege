@@ -28,6 +28,14 @@
       <button type="button" [class.active]="mode() === 'register'" (click)="showRegister()">Register</button>
     </div>
 
+    <button type="button" class="oauth-button" [disabled]="isSubmitting()" (click)="signInWithGoogle()">
+      Continue with Google
+    </button>
+
+    <div class="auth-divider" aria-hidden="true">
+      <span>or</span>
+    </div>
+
     <form class="auth-form" (ngSubmit)="submit()">
       <label class="field">
         Email

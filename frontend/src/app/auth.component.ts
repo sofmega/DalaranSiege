@@ -74,6 +74,21 @@ export class AuthComponent {
     }
   }
 
+  protected async signInWithGoogle(): Promise<void> {
+    this.clearMessages();
+    this.isSubmitting.set(true);
+
+    try {
+      const result = await this.authService.signInWithGoogle();
+
+      if (result.error) {
+        this.errorMessage.set(result.error.message);
+      }
+    } finally {
+      this.isSubmitting.set(false);
+    }
+  }
+
   protected signOut(): void {
     void this.authService.signOut();
   }

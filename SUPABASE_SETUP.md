@@ -177,6 +177,21 @@ export class SupabaseService {
 }
 ```
 
+### Google Login
+
+Enable Google in Supabase before using the `Continue with Google` button:
+
+1. In Supabase Dashboard, open `Authentication > Providers`.
+2. Enable `Google`.
+3. Add the Google OAuth client ID and client secret from Google Cloud.
+4. Add your local app URL to Supabase auth redirect URLs:
+
+```text
+http://localhost:4201
+```
+
+For production, also add the deployed frontend URL.
+
 When calling Spring Boot, send the Supabase access token:
 
 ```ts
