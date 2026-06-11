@@ -1,0 +1,125 @@
+<main class="page">
+  <a class="back-link" routerLink="/">Back to heroes</a>
+
+  @if (isLoading()) {
+    <p class="state">Loading hero build...</p>
+  } @else if (errorMessage()) {
+    <p class="state error">{{ errorMessage() }}</p>
+  } @else if (hero(); as selectedHero) {
+    <section class="build-hero">
+      <div class="hero-icon large-icon">
+        @if (!isImageBroken(selectedHero.id)) {
+          <img
+            [src]="selectedHero.iconUrl"
+            [alt]="selectedHero.name + ' icon'"
+            (error)="markImageBroken(selectedHero.id)"
+          />
+        } @else {
+          <span>{{ initials(selectedHero.name) }}</span>
+        }
+      </div>
+
+      <div>
+        <p class="eyebrow">Hero Build</p>
+        <h1>{{ selectedHero.name }}</h1>
+        <p class="summary">{{ selectedHero.heroClass }} build planner.</p>
+        <div class="roles" aria-label="Hero roles">
+          @for (role of selectedHero.roles; track role) {
+            <span>{{ role }}</span>
+          }
+        </div>
+      </div>
+    </section>
+
+    <div class="view-switcher" aria-label="Build mode">
+      <button type="button" [class.active]="mode() === 'view'" (click)="showView()">View Build</button>
+      <button type="button" [class.active]="mode() === 'create'" (click)="showCreate()">Create Build</button>
+    </div>
+
+    @if (mode() === 'view') {
+      <section class="build-panel">
+        <div class="build-panel-header">
+          <div>
+            <p class="eyebrow">Current Build</p>
+            <h2>{{ buildName() }}</h2>
+          </div>
+          <button type="button" class="secondary-button" (click)="showCreate()">Edit</button>
+        </div>
+
+        <section class="build-items" aria-label="Selected build items">
+          @for (item of featuredItems(); track item.id) {
+            <article class="build-item">
+              <div class="hero-icon">
+                @if (!isImageBroken(item.id)) {
+                  <img
+                    [src]="item.iconUrl"
+                    [alt]="item.name + ' icon'"
+                    (error)="markImageBroken(item.id)"
+                  />
+                } @else {
+                  <span>{{ initials(item.name) }}</span>
+                }
+              </div>
+              <div>
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.itemClass }} - {{ item.price }} gold</p>
+              </div>
+            </article>
+          }
+        </section>
+
+        @if (notes()) {
+          <p class="build-notes">{{ notes() }}</p>
+        }
+      </section>
+    } @else {
+      <section class="build-panel">
+        <label class="field">
+          Build name
+          <input [value]="buildName()" (input)="updateBuildName($event)" />
+        </label>
+
+        <label class="field">
+          Notes
+          <textarea rows="4" [value]="notes()" (input)="updateNotes($event)"></textarea>
+        </label>
+
+        <div class="build-panel-header">
+          <div>
+            <p class="eyebrow">Items</p>
+            <h2>Select up to 6 items</h2>
+          </div>
+          <p class="selection-count">{{ selectedItemIds().length }}/6 selected</p>
+        </div>
+
+        <section class="item-picker" aria-label="Item picker">
+          @for (item of items(); track item.id) {
+            <button
+              type="button"
+              class="picker-item"
+              [class.selected]="isSelected(item.id)"
+              (click)="toggleItem(item.id)"
+            >
+              <span class="hero-icon">
+                @if (!isImageBroken(item.id)) {
+                  <img
+                    [src]="item.iconUrl"
+                    [alt]="item.name + ' icon'"
+                    (error)="markImageBroken(item.id)"
+                  />
+                } @else {
+                  <span>{{ initials(item.name) }}</span>
+                }
+              </span>
+              <span>{{ item.name }}</span>
+            </button>
+          }
+        </section>
+
+        <button type="button" class="primary-button" (click)="saveBuild()">Save Build</button>
+      </section>
+    }
+  } @else {
+    <p class="state error">Hero not found.</p>
+  }
+</main>

@@ -40,3 +40,17 @@ logs/
 
 ### Local project notes ###
 PROJECT_CONTEXT.md
+
+### Local secrets ###
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+frontend/src/environments/environment.ts
+frontend/src/environments/environment.*.ts
+!frontend/src/environments/environment.example.ts

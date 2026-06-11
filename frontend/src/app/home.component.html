@@ -1,0 +1,123 @@
+<main class="page">
+  <section class="header">
+    <p class="eyebrow">DalaranSiege</p>
+    <h1>{{ activeView() === 'heroes' ? 'Heroes' : 'Items' }}</h1>
+    <p class="summary">Game data loaded from the Spring Boot backend.</p>
+
+    <div class="view-switcher" aria-label="Data view">
+      <button type="button" [class.active]="activeView() === 'heroes'" (click)="showHeroes()">Heroes</button>
+      <button type="button" [class.active]="activeView() === 'items'" (click)="showItems()">Items</button>
+    </div>
+  </section>
+
+  @if (isLoading()) {
+    <p class="state">Loading game data...</p>
+  } @else if (errorMessage()) {
+    <p class="state error">{{ errorMessage() }}</p>
+  } @else if (activeView() === 'heroes') {
+    <section class="hero-grid" aria-label="Dalaran Siege hero list">
+      @for (hero of heroes(); track hero.id) {
+        <a class="hero-card hero-link" [routerLink]="['/heroes', hero.id, 'build']">
+          <div class="hero-icon">
+            @if (!isImageBroken(hero.id)) {
+              <img
+                [src]="hero.iconUrl"
+                [alt]="hero.name + ' icon'"
+                (error)="markImageBroken(hero.id)"
+              />
+            } @else {
+              <span>{{ initials(hero.name) }}</span>
+            }
+          </div>
+
+          <div class="hero-details">
+            <h2>{{ hero.name }}</h2>
+            <p class="hero-class">{{ hero.heroClass }}</p>
+            <div class="roles" aria-label="Hero roles">
+              @for (role of hero.roles; track role) {
+                <span>{{ role }}</span>
+              }
+            </div>
+          </div>
+        </a>
+      }
+    </section>
+  } @else {
+    <div class="shop-filter">
+      <label for="shop-filter">Shop</label>
+      <select id="shop-filter" [value]="selectedShopId()" (change)="selectShop($event)">
+        <option value="">All Shops</option>
+        @for (shop of shops(); track shop.id) {
+          <option [value]="shop.id">{{ shop.name }}</option>
+        }
+      </select>
+    </div>
+
+    <section class="item-grid" aria-label="Dalaran Siege item list">
+      @for (item of filteredItems(); track item.id) {
+        <article class="item-card" tabindex="0">
+          <div class="item-main">
+            <div class="hero-icon">
+              @if (!isImageBroken(item.id)) {
+                <img
+                  [src]="item.iconUrl"
+                  [alt]="item.name + ' icon'"
+                  (error)="markImageBroken(item.id)"
+                />
+              } @else {
+                <span>{{ initials(item.name) }}</span>
+              }
+            </div>
+
+            <div class="hero-details">
+              <h2>{{ item.name }}</h2>
+              <p class="hero-class">{{ item.itemClass }} - {{ item.price }} gold</p>
+              <div class="roles" aria-label="Item bonuses">
+                @for (bonus of item.bonuses; track bonus) {
+                  <span>{{ bonus }}</span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="item-tooltip" role="tooltip">
+            <h3>{{ item.name }}</h3>
+            <p>{{ item.description }}</p>
+
+            <dl>
+              <div>
+                <dt>Price</dt>
+                <dd>{{ item.price }} gold</dd>
+              </div>
+              @if (item.range !== null) {
+                <div>
+                  <dt>Range</dt>
+                  <dd>{{ item.range }}</dd>
+                </div>
+              }
+              @for (stat of statEntries(item.stats); track stat[0]) {
+                <div>
+                  <dt>{{ formatLabel(stat[0]) }}</dt>
+                  <dd>{{ stat[1] }}</dd>
+                </div>
+              }
+            </dl>
+
+            @if (item.requirements.length) {
+              <p class="requirements">
+                Requires:
+                @for (requirement of item.requirements; track requirement.itemId) {
+                  <span>{{ formatRequirement(requirement) }}</span>
+                }
+              </p>
+            }
+
+            <p class="requirements">Sold by: {{ item.shopIds.join(', ') }}</p>
+          </div>
+        </article>
+      } @empty {
+        <p class="state">No items found for this shop.</p>
+      }
+    </section>
+  }
+</main>
