@@ -3,17 +3,19 @@ package com.dalaran.dalarans.service;
 import com.dalaran.dalarans.config.SupabaseProperties;
 import org.springframework.stereotype.Service;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 @Service
 public class SupabaseStatusService {
 
     private final SupabaseProperties properties;
+    private final DataSource dataSource;
 
-    public SupabaseStatusService(SupabaseProperties properties) {
+    public SupabaseStatusService(SupabaseProperties properties, DataSource dataSource) {
         this.properties = properties;
+        this.dataSource = dataSource;
     }
 
     public SupabaseStatus checkStatus() {
@@ -21,11 +23,7 @@ public class SupabaseStatusService {
             return new SupabaseStatus(false, false, "Supabase database config is missing.");
         }
 
-        try (Connection connection = DriverManager.getConnection(
-                properties.dbUrl(),
-                properties.dbUser(),
-                properties.dbPassword()
-        )) {
+        try (Connection connection = dataSource.getConnection()) {
             return new SupabaseStatus(
                     true,
                     connection.isValid(5),
