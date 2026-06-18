@@ -1,0 +1,22 @@
+.gcloudignore
+.git/
+.vercel/
+
+# Local secrets and generated output.
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+backend/target/
+frontend/
+logs/
+target/
+
+# Local editor metadata.
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
