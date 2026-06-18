@@ -1,0 +1,12 @@
+# Never upload local secrets or generated output to Cloud Build.
+.env
+.env.*
+!.env.example
+target/
+
+# Local editor and OS metadata.
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
