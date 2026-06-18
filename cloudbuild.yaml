@@ -36,6 +36,7 @@ steps:
       - --memory=512Mi
       - --concurrency=20
       - --timeout=30s
+      - --set-secrets=SUPABASE_DB_PASSWORD=supabase-db-password:latest
       - --quiet
 
 images:
