@@ -8,11 +8,11 @@
     </div>
 
     <div class="account-bar nav-account" aria-label="Account">
+      <app-theme-toggle />
       @if (authService.isAuthenticated()) {
         <span>{{ authService.displayName() }}</span>
         <button type="button" class="secondary-button" (click)="signOut()">Logout</button>
       } @else {
-        <span>Visitor</span>
         <a class="secondary-link" routerLink="/auth">Login</a>
       }
     </div>

@@ -2,12 +2,13 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GameDataService, HeroBuildDto, HeroDto, ItemDto } from './game-data.service';
 import { SupabaseAuthService } from './supabase-auth.service';
+import { ThemeToggleComponent } from './theme-toggle.component';
 
 type BuildSection = 'early' | 'core' | 'optional';
 
 @Component({
   selector: 'app-build-detail',
-  imports: [RouterLink],
+  imports: [RouterLink, ThemeToggleComponent],
   templateUrl: './build-detail.component.html'
 })
 export class BuildDetailComponent {

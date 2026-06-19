@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GameDataService, ItemDto, Shop } from './game-data.service';
 import { calculateTotalItemCost, itemShopNames, shouldShowItemDescription } from './item-data.utils';
 import { SupabaseAuthService } from './supabase-auth.service';
+import { ThemeToggleComponent } from './theme-toggle.component';
 
 interface RecipeTreeNode {
   item: ItemDto | null;
@@ -15,7 +16,7 @@ interface RecipeTreeNode {
 
 @Component({
   selector: 'app-item-detail',
-  imports: [RouterLink],
+  imports: [RouterLink, ThemeToggleComponent],
   templateUrl: './item-detail.component.html'
 })
 export class ItemDetailComponent {

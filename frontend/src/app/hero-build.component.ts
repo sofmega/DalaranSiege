@@ -3,13 +3,14 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GameDataService, HeroBuildDto, HeroDto, ItemDto } from './game-data.service';
 import { SupabaseAuthService } from './supabase-auth.service';
+import { ThemeToggleComponent } from './theme-toggle.component';
 
 type BuildMode = 'view' | 'create';
 type BuildSection = 'early' | 'core' | 'optional';
 
 @Component({
   selector: 'app-hero-build',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, ThemeToggleComponent],
   templateUrl: './hero-build.component.html'
 })
 export class HeroBuildComponent {

@@ -2,12 +2,13 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { SupabaseAuthService } from './supabase-auth.service';
+import { ThemeToggleComponent } from './theme-toggle.component';
 
 type AuthMode = 'login' | 'register';
 
 @Component({
   selector: 'app-auth',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, ThemeToggleComponent],
   templateUrl: './auth.component.html'
 })
 export class AuthComponent {

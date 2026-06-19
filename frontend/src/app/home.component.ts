@@ -3,12 +3,13 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GameDataService, HeroDto, ItemDto, ItemRequirement, Shop } from './game-data.service';
 import { calculateTotalItemCost, itemShopNames, shouldShowItemDescription } from './item-data.utils';
 import { SupabaseAuthService } from './supabase-auth.service';
+import { ThemeToggleComponent } from './theme-toggle.component';
 
 type ViewMode = 'heroes' | 'items';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink],
+  imports: [RouterLink, ThemeToggleComponent],
   templateUrl: './home.component.html'
 })
 export class HomeComponent {
