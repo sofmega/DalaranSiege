@@ -1,5 +1,5 @@
 import { ItemDto, Shop } from './game-data.service';
-import { calculateTotalItemCost, itemShopNames } from './item-data.utils';
+import { calculateTotalItemCost, itemShopNames, shouldShowItemDescription } from './item-data.utils';
 
 describe('item data helpers', () => {
   it('calculates nested total costs with quantities', () => {
@@ -26,6 +26,26 @@ describe('item data helpers', () => {
     ]);
 
     expect(itemShopNames(selectedItem, shops)).toEqual(['Arcane Vault']);
+  });
+
+  it('hides descriptions whenever bonus chips are available', () => {
+    const selectedItem = {
+      ...item('figurine', 100),
+      bonuses: ['+5 Intelligence'],
+      description: 'Grants stats. Backstab also reduces enemy armor.'
+    };
+
+    expect(shouldShowItemDescription(selectedItem)).toBe(false);
+  });
+
+  it('shows descriptions for items without bonus chips', () => {
+    const selectedItem = {
+      ...item('special', 100),
+      bonuses: [],
+      description: 'A unique item description.'
+    };
+
+    expect(shouldShowItemDescription(selectedItem)).toBe(true);
   });
 });
 

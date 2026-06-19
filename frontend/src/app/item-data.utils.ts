@@ -31,3 +31,7 @@ export function itemShopNames(item: ItemDto, shopById: ReadonlyMap<string, Shop>
     .map((shopId) => shopById.get(shopId)?.name)
     .filter((name): name is string => name !== undefined);
 }
+
+export function shouldShowItemDescription(item: ItemDto): boolean {
+  return item.bonuses.length === 0 && item.description.trim().length > 0;
+}

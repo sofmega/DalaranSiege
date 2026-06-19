@@ -463,9 +463,7 @@ h3 {
   transform: translateY(-4px);
 }
 
-.item-card:hover .item-tooltip,
-.item-card:focus-visible .item-tooltip,
-.item-card:focus-within .item-tooltip {
+.item-card:hover .item-tooltip {
   opacity: 1;
   transform: translateY(0);
 }
@@ -625,7 +623,7 @@ h3 {
 
 .item-detail-meta {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
   margin-top: 24px;
 }

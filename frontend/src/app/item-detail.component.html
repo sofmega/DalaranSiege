@@ -38,7 +38,9 @@
         <div class="item-detail-title">
           <p class="eyebrow">{{ item.itemClass }}</p>
           <h1>{{ item.name }}</h1>
-          <p>{{ item.description }}</p>
+          @if (shouldShowDescription(item)) {
+            <p>{{ item.description }}</p>
+          }
         </div>
 
         <dl class="item-price-summary">
@@ -57,8 +59,8 @@
         </dl>
       </header>
 
-      <div class="item-detail-meta">
-        @if (item.bonuses.length) {
+      @if (item.bonuses.length) {
+        <div class="item-detail-meta">
           <section class="item-detail-panel">
             <p class="eyebrow">Bonuses</p>
             <div class="detail-badges">
@@ -67,24 +69,8 @@
               }
             </div>
           </section>
-        }
-
-        <section class="item-detail-panel">
-          <p class="eyebrow">Stats</p>
-          <dl class="detail-stats">
-            @if (item.range !== null) {
-              <div><dt>Range</dt><dd>{{ item.range }}</dd></div>
-            }
-            @for (stat of statEntries(item.stats); track stat[0]) {
-              <div><dt>{{ formatLabel(stat[0]) }}</dt><dd>{{ stat[1] }}</dd></div>
-            } @empty {
-              @if (item.range === null) {
-                <div><dt>Stats</dt><dd>No additional stats</dd></div>
-              }
-            }
-          </dl>
-        </section>
-      </div>
+        </div>
+      }
 
       <section class="recipe-section">
         <div class="recipe-heading">

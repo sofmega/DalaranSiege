@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GameDataService, ItemDto, Shop } from './game-data.service';
-import { calculateTotalItemCost, itemShopNames } from './item-data.utils';
+import { calculateTotalItemCost, itemShopNames, shouldShowItemDescription } from './item-data.utils';
 import { SupabaseAuthService } from './supabase-auth.service';
 
 interface RecipeTreeNode {
@@ -64,12 +64,8 @@ export class ItemDetailComponent {
     return names.length ? names.join(', ') : 'Not listed';
   }
 
-  protected statEntries(stats: Record<string, unknown>): Array<[string, unknown]> {
-    return Object.entries(stats);
-  }
-
-  protected formatLabel(value: string): string {
-    return value.replace(/([A-Z])/g, ' $1').replace(/^./, (letter) => letter.toUpperCase());
+  protected shouldShowDescription(item: ItemDto): boolean {
+    return shouldShowItemDescription(item);
   }
 
   protected signOut(): void {

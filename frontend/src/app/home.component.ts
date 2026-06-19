@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GameDataService, HeroDto, ItemDto, ItemRequirement, Shop } from './game-data.service';
-import { calculateTotalItemCost, itemShopNames } from './item-data.utils';
+import { calculateTotalItemCost, itemShopNames, shouldShowItemDescription } from './item-data.utils';
 import { SupabaseAuthService } from './supabase-auth.service';
 
 type ViewMode = 'heroes' | 'items';
@@ -64,10 +64,6 @@ export class HomeComponent {
     return this.items().filter((item) => item.shopIds.includes(shopId));
   }
 
-  protected statEntries(stats: Record<string, unknown>): Array<[string, unknown]> {
-    return Object.entries(stats);
-  }
-
   protected formatLabel(value: string): string {
     return value.replace(/([A-Z])/g, ' $1').replace(/^./, (letter) => letter.toUpperCase());
   }
@@ -84,6 +80,10 @@ export class HomeComponent {
   protected shopNamesForItem(item: ItemDto): string {
     const names = itemShopNames(item, this.shopById());
     return names.length ? names.join(', ') : 'Not listed';
+  }
+
+  protected shouldShowDescription(item: ItemDto): boolean {
+    return shouldShowItemDescription(item);
   }
 
   protected markImageBroken(iconId: string): void {
