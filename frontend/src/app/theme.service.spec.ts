@@ -2,8 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { ThemeService } from './theme.service';
 
 describe('ThemeService', () => {
-  const originalMatchMedia = window.matchMedia;
-
   beforeEach(() => {
     localStorage.clear();
     delete document.documentElement.dataset['theme'];
@@ -11,7 +9,6 @@ describe('ThemeService', () => {
   });
 
   afterEach(() => {
-    window.matchMedia = originalMatchMedia;
     TestBed.resetTestingModule();
   });
 
@@ -24,12 +21,10 @@ describe('ThemeService', () => {
     expect(document.documentElement.dataset['theme']).toBe('dark');
   });
 
-  it('uses the system preference when no theme is saved', () => {
-    window.matchMedia = (() => ({ matches: true })) as unknown as typeof window.matchMedia;
-
+  it('defaults to light when no theme is saved', () => {
     const service = TestBed.inject(ThemeService);
 
-    expect(service.theme()).toBe('dark');
+    expect(service.theme()).toBe('light');
   });
 
   it('persists theme changes', () => {

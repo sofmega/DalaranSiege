@@ -38,9 +38,7 @@ export class ThemeService {
       // Fall through to the system preference.
     }
 
-    return typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light';
+    return 'light';
   }
 
   private applyTheme(theme: Theme): void {
