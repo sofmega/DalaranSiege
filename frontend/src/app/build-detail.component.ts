@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GameDataService, HeroBuildDto, HeroDto, ItemDto } from './game-data.service';
+import { SeoService } from './seo.service';
 import { SupabaseAuthService } from './supabase-auth.service';
 import { ThemeToggleComponent } from './theme-toggle.component';
 
@@ -14,6 +15,7 @@ type BuildSection = 'early' | 'core' | 'optional';
 export class BuildDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly gameDataService = inject(GameDataService);
+  private readonly seo = inject(SeoService);
   protected readonly authService = inject(SupabaseAuthService);
   protected readonly heroId = this.route.snapshot.paramMap.get('heroId') ?? '';
   private readonly buildId = this.route.snapshot.paramMap.get('buildId') ?? '';
@@ -133,6 +135,18 @@ export class BuildDetailComponent {
         this.build.set(build);
         if (!build) {
           this.errorMessage.set('Build not found.');
+          this.seo.setPage({
+            title: 'Build Not Found',
+            description: 'The requested DalaranSiege build could not be found.',
+            path: `/heroes/${this.heroId}/builds/${this.buildId}`,
+            noIndex: true
+          });
+        } else {
+          this.seo.setPage({
+            title: build.name,
+            description: build.notes || `View the Early, Core, and Optional items in ${build.name}, created by ${build.authorName}.`,
+            path: `/heroes/${this.heroId}/builds/${build.id}`
+          });
         }
         this.finishLoading();
       },

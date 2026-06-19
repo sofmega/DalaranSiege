@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GameDataService, HeroBuildDto, HeroDto, ItemDto } from './game-data.service';
+import { SeoService } from './seo.service';
 import { SupabaseAuthService } from './supabase-auth.service';
 import { ThemeToggleComponent } from './theme-toggle.component';
 
@@ -17,6 +18,7 @@ export class HeroBuildComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly gameDataService = inject(GameDataService);
+  private readonly seo = inject(SeoService);
   protected readonly authService = inject(SupabaseAuthService);
   private readonly heroId = this.route.snapshot.paramMap.get('id') ?? '';
 
@@ -267,6 +269,21 @@ export class HeroBuildComponent {
         const hero = heroes.find((candidate) => candidate.id === this.heroId) ?? null;
         this.hero.set(hero);
         this.buildName.set(`${hero?.name ?? 'Hero'} Build`);
+        if (hero) {
+          this.seo.setPage({
+            title: `${hero.name} Builds`,
+            description: `Browse and create Early, Core, and Optional item builds for ${hero.name} in DalaranSiege.`,
+            path: `/heroes/${hero.id}/build`,
+            image: hero.iconUrl
+          });
+        } else {
+          this.seo.setPage({
+            title: 'Hero Not Found',
+            description: 'The requested DalaranSiege hero could not be found.',
+            path: `/heroes/${this.heroId}/build`,
+            noIndex: true
+          });
+        }
         this.finishLoading();
       },
       error: () => {

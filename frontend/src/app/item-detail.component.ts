@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GameDataService, ItemDto, Shop } from './game-data.service';
 import { calculateTotalItemCost, itemShopNames, shouldShowItemDescription } from './item-data.utils';
+import { SeoService } from './seo.service';
 import { SupabaseAuthService } from './supabase-auth.service';
 import { ThemeToggleComponent } from './theme-toggle.component';
 
@@ -22,6 +23,7 @@ interface RecipeTreeNode {
 export class ItemDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly gameDataService = inject(GameDataService);
+  private readonly seo = inject(SeoService);
   protected readonly authService = inject(SupabaseAuthService);
   private readonly itemId = signal('');
 
@@ -145,6 +147,21 @@ export class ItemDetailComponent {
     const item = items.find((candidate) => candidate.id === this.itemId()) ?? null;
     this.selectedItem.set(item);
     this.errorMessage.set(item ? '' : 'Item not found.');
+    if (item) {
+      this.seo.setPage({
+        title: `${item.name} Recipe and Total Cost`,
+        description: `View ${item.name} bonuses, total gold cost, shops, required components, and complete crafting tree in DalaranSiege.`,
+        path: `/items/${item.id}`,
+        image: item.iconUrl
+      });
+    } else {
+      this.seo.setPage({
+        title: 'Item Not Found',
+        description: 'The requested DalaranSiege item could not be found.',
+        path: `/items/${this.itemId()}`,
+        noIndex: true
+      });
+    }
   }
 
   private loadShops(): void {

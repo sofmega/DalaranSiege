@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dalaran-siege.vercel.app/sitemap.xml

@@ -1,6 +1,6 @@
 # Deployment Runbook
 
-Last verified: 2026-06-18
+Last verified: 2026-06-19
 
 This document describes the production architecture, deployment automation,
 security boundaries, and verification commands for DalaranSiege. It must not
@@ -121,8 +121,59 @@ Supabase Auth should also have this production Site URL and redirect pattern:
 
 ```text
 Site URL: https://dalaran-siege.vercel.app
-Redirect URL: https://dalaran-siege.vercel.app/**
+Redirect URLs:
+  https://dalaran-siege.vercel.app
+  https://dalaran-siege.vercel.app/**
+  http://localhost:4201
+  http://localhost:4201/**
 ```
+
+Vercel Web Analytics is enabled. The frontend package is
+`@vercel/analytics`, initialized with `inject()` in `frontend/src/main.ts`.
+
+## Google OAuth through Supabase
+
+- Google Cloud project: `dalaransiege`
+- OAuth client type: Web application
+- OAuth client name: `DalaranSiege Web`
+- Supabase project ref: `vnekvzddgjcsowinazwk`
+- Supabase Google provider: enabled
+
+Google OAuth client configuration:
+
+```text
+Authorized JavaScript origins:
+  http://localhost:4201
+  https://dalaran-siege.vercel.app
+
+Authorized redirect URI:
+  https://vnekvzddgjcsowinazwk.supabase.co/auth/v1/callback
+```
+
+The Supabase callback URL belongs only in Google's authorized redirect URIs.
+Do not add it to Supabase Redirect URLs; those URLs control where Supabase may
+return the browser after authentication. Keep `Skip nonce checks` and `Allow
+users without an email` disabled. If the Google app remains in testing mode,
+the account used for verification must be listed as a Google Auth test user.
+
+The Google client secret lives only in the Supabase provider settings. Never
+put it in this repository, Vercel public variables, logs, screenshots, or issue
+text.
+
+## Search indexing
+
+The Angular frontend manages page title, description, canonical URL, Open
+Graph, Twitter, and robots metadata with `frontend/src/app/seo.service.ts`.
+Entity routes receive entity-specific metadata; auth and missing entity pages
+are marked `noindex`.
+
+`frontend/public/robots.txt` advertises
+`https://dalaran-siege.vercel.app/sitemap.xml`. The production frontend build
+runs `frontend/scripts/generate-sitemap.mjs`, which generates sitemap entries
+for the homepage plus all current item and hero detail routes from the backend
+catalog JSON. After deploying SEO changes, submit the sitemap URL in Google
+Search Console and request indexing; metadata makes pages indexable but cannot
+guarantee rankings or immediate appearance in search results.
 
 ## Backend runtime configuration
 
@@ -148,6 +199,10 @@ The PostgreSQL URL uses the IPv4-compatible Supabase session pooler. Do not
 replace it with the direct IPv6-only database hostname unless the runtime
 network is known to support that route.
 
+The current schema ends at Flyway migration V8. Never edit a migration already
+applied in production. Add a new versioned migration instead, or Flyway will
+reject startup because its stored checksum no longer matches the file.
+
 ## Verification
 
 After a deployment, verify both the direct API and Vercel proxy:
@@ -156,6 +211,8 @@ After a deployment, verify both the direct API and Vercel proxy:
 Invoke-RestMethod https://dalaransiege-api-g23u2zuwza-od.a.run.app/api/health
 Invoke-RestMethod https://dalaran-siege.vercel.app/api/health
 Invoke-RestMethod https://dalaran-siege.vercel.app/api/supabase/status
+Invoke-WebRequest https://dalaran-siege.vercel.app/robots.txt
+Invoke-WebRequest https://dalaran-siege.vercel.app/sitemap.xml
 @(Invoke-RestMethod https://dalaran-siege.vercel.app/api/v1/heroes).Count
 @(Invoke-RestMethod https://dalaran-siege.vercel.app/api/items).Count
 @(Invoke-RestMethod https://dalaran-siege.vercel.app/api/shops).Count
@@ -189,7 +246,10 @@ gcloud run services logs read dalaransiege-api --project=dalaransiege --region=e
 - API starts but database calls fail: inspect the Secret Manager version,
   session-pooler URL, database username, and Cloud Run logs.
 - Authentication fails: verify Vercel public Supabase variables, Supabase Auth
-  redirect URLs, the JWT issuer, and the browser Authorization header.
+  redirect URLs, the exact Google callback URI, Google test-user access, the
+  JWT issuer, and the browser Authorization header.
+- Pages are not indexed: verify production metadata, `robots.txt`, and
+  `sitemap.xml`, then inspect Google Search Console coverage and URL inspection.
 - First request is slow: Cloud Run is intentionally configured to scale to zero.
 
 ## Safe change workflow

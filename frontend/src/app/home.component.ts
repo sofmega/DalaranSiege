@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GameDataService, HeroDto, ItemDto, ItemRequirement, Shop } from './game-data.service';
 import { calculateTotalItemCost, itemShopNames, shouldShowItemDescription } from './item-data.utils';
+import { SeoService } from './seo.service';
 import { SupabaseAuthService } from './supabase-auth.service';
 import { ThemeToggleComponent } from './theme-toggle.component';
 
@@ -15,6 +16,7 @@ type ViewMode = 'heroes' | 'items';
 export class HomeComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly gameDataService = inject(GameDataService);
+  private readonly seo = inject(SeoService);
   protected readonly authService = inject(SupabaseAuthService);
 
   protected readonly activeView = signal<ViewMode>('heroes');
@@ -38,7 +40,19 @@ export class HomeComponent {
 
   constructor() {
     this.route.queryParamMap.subscribe((params) => {
-      this.activeView.set(params.get('view') === 'items' ? 'items' : 'heroes');
+      const view: ViewMode = params.get('view') === 'items' ? 'items' : 'heroes';
+      this.activeView.set(view);
+      this.seo.setPage(view === 'items'
+        ? {
+            title: 'Warcraft III Items and Crafting Recipes',
+            description: 'Browse DalaranSiege items, total gold costs, shop locations, bonuses, and recursive crafting recipes.',
+            path: '/?view=items'
+          }
+        : {
+            title: 'DalaranSiege Heroes and Community Builds',
+            description: 'Explore DalaranSiege heroes and discover community-created Warcraft III item builds.',
+            path: '/'
+          });
     });
 
     this.loadHeroes();

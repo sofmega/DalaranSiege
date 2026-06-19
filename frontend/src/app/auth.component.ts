@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { SeoService } from './seo.service';
 import { SupabaseAuthService } from './supabase-auth.service';
 import { ThemeToggleComponent } from './theme-toggle.component';
 
@@ -14,6 +15,7 @@ type AuthMode = 'login' | 'register';
 export class AuthComponent {
   protected readonly authService = inject(SupabaseAuthService);
   private readonly router = inject(Router);
+  private readonly seo = inject(SeoService);
 
   protected readonly mode = signal<AuthMode>('login');
   protected readonly username = signal('');
@@ -22,6 +24,15 @@ export class AuthComponent {
   protected readonly message = signal('');
   protected readonly errorMessage = signal('');
   protected readonly isSubmitting = signal(false);
+
+  constructor() {
+    this.seo.setPage({
+      title: 'Login or Register',
+      description: 'Sign in to create, share, and vote on DalaranSiege hero builds.',
+      path: '/auth',
+      noIndex: true
+    });
+  }
 
   protected showLogin(): void {
     this.mode.set('login');
