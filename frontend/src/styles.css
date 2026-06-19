@@ -273,6 +273,11 @@ h1 {
   gap: 16px;
 }
 
+.item-grid {
+  position: relative;
+  overflow: visible;
+}
+
 .hero-card,
 .item-card,
 .build-panel,
@@ -311,9 +316,17 @@ h1 {
 
 .item-card {
   position: relative;
-  min-height: 178px;
-  align-items: stretch;
+  z-index: 0;
+  min-height: 116px;
+  align-items: center;
+  overflow: visible;
   outline: none;
+}
+
+.item-card:hover,
+.item-card:focus-visible,
+.item-card:focus-within {
+  z-index: 50;
 }
 
 .item-link {
@@ -323,7 +336,7 @@ h1 {
 
 .item-link .item-main {
   width: 100%;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .item-card-icon {
@@ -334,9 +347,11 @@ h1 {
 
 .item-card .hero-details {
   display: flex;
-  min-height: 140px;
+  min-height: 0;
   flex: 1;
   flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 .item-card .hero-details h2 {
@@ -347,21 +362,10 @@ h1 {
 }
 
 .item-total-price {
-  margin: 0 0 10px;
+  margin: 7px 0 0;
   color: var(--gold);
   font-size: 1rem;
   font-weight: 900;
-}
-
-.item-card-bonuses {
-  margin-top: auto;
-}
-
-.item-card-bonuses span {
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .item-main {
@@ -439,7 +443,7 @@ h3 {
 
 .item-tooltip {
   position: absolute;
-  z-index: 5;
+  z-index: 1000;
   left: 16px;
   right: 16px;
   top: calc(100% + 8px);
@@ -451,6 +455,8 @@ h3 {
   background:
     linear-gradient(145deg, rgb(91 140 255 / 10%), transparent 40%),
     #080d18;
+  opacity: 0;
+  isolation: isolate;
   box-shadow: 0 22px 60px rgb(0 0 0 / 58%);
   opacity: 0;
   pointer-events: none;
@@ -1336,7 +1342,17 @@ a.recipe-node:focus-visible {
   border: 1px solid var(--border);
   border-radius: 8px;
   background: rgb(255 255 255 / 3%);
+  color: inherit;
   text-align: center;
+  text-decoration: none;
+}
+
+.detail-item-slot:hover,
+.detail-item-slot:focus-visible {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  outline: none;
+  transform: translateY(-2px);
 }
 
 .detail-item-icon {

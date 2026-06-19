@@ -97,16 +97,7 @@
 
             <div class="hero-details">
               <h2>{{ item.name }}</h2>
-              <p class="hero-class">{{ item.itemClass }}</p>
               <p class="item-total-price">{{ totalItemCost(item) }} gold</p>
-              <div class="roles item-card-bonuses" aria-label="Item bonuses">
-                @for (bonus of item.bonuses.slice(0, 3); track $index) {
-                  <span>{{ bonus }}</span>
-                }
-                @if (item.bonuses.length > 3) {
-                  <span>+{{ item.bonuses.length - 3 }} more</span>
-                }
-              </div>
             </div>
           </div>
 
