@@ -1,0 +1,103 @@
+<main class="page build-detail-page">
+  <nav class="top-nav" aria-label="Primary navigation">
+    <a class="brand-link" routerLink="/">DalaranSiege</a>
+
+    <div class="nav-links">
+      <a routerLink="/" [queryParams]="{ view: 'heroes' }">Heroes</a>
+      <a routerLink="/" [queryParams]="{ view: 'items' }">Items</a>
+    </div>
+
+    <div class="account-bar nav-account" aria-label="Account">
+      @if (authService.isAuthenticated()) {
+        <span>{{ authService.displayName() }}</span>
+        <button type="button" class="secondary-button" (click)="signOut()">Logout</button>
+      } @else {
+        <span>Visitor</span>
+        <a class="secondary-link" routerLink="/auth">Login</a>
+      }
+    </div>
+  </nav>
+
+  <a class="back-link" [routerLink]="['/heroes', heroId, 'build']">← Back to {{ hero()?.name ?? 'hero' }} builds</a>
+
+  @if (isLoading()) {
+    <p class="state">Loading build...</p>
+  } @else if (errorMessage()) {
+    <p class="state error">{{ errorMessage() }}</p>
+  } @else if (build(); as selectedBuild) {
+    <article class="detail-build-card">
+      <header class="detail-build-header">
+        <div class="detail-vote" aria-label="Build votes">
+          <button
+            type="button"
+            class="vote-arrow"
+            [class.active]="selectedBuild.currentUserVote === 1"
+            (click)="vote(1)"
+            aria-label="Upvote build"
+          >▲</button>
+          <strong>{{ selectedBuild.score }}</strong>
+          <button
+            type="button"
+            class="vote-arrow"
+            [class.active]="selectedBuild.currentUserVote === -1"
+            (click)="vote(-1)"
+            aria-label="Downvote build"
+          >▼</button>
+        </div>
+
+        <div>
+          <p class="eyebrow">Community Build</p>
+          <h1>{{ selectedBuild.name }}</h1>
+          <p class="detail-build-author">Build created by {{ selectedBuild.authorName }}</p>
+        </div>
+      </header>
+
+      @if (authMessage()) {
+        <p class="state">{{ authMessage() }} <a routerLink="/auth">Login or register</a></p>
+      }
+
+      @if (selectedBuild.notes) {
+        <section class="detail-notes">
+          <p class="eyebrow">Guide Notes</p>
+          <p>{{ selectedBuild.notes }}</p>
+        </section>
+      }
+
+      <div class="detail-build-sections">
+        @for (section of buildSections; track section.key) {
+          <section class="detail-build-section" [class]="'detail-build-section section-' + section.key">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">{{ section.label }}</p>
+                <p>{{ section.description }}</p>
+              </div>
+              <span class="section-count">{{ sectionItems(selectedBuild, section.key).length }}/6</span>
+            </div>
+
+            <div class="detail-item-grid">
+              @for (item of sectionItems(selectedBuild, section.key); track $index) {
+                <article class="detail-item-slot">
+                  <div class="detail-item-icon">
+                    @if (!isImageBroken(item.id)) {
+                      <img
+                        [src]="item.iconUrl"
+                        [alt]="item.name + ' icon'"
+                        (error)="markImageBroken(item.id)"
+                      />
+                    } @else {
+                      <span>{{ initials(item.name) }}</span>
+                    }
+                  </div>
+                  <h3>{{ item.name }}</h3>
+                  <p>{{ item.itemClass }} · {{ item.price }} gold</p>
+                </article>
+              } @empty {
+                <p class="empty-section">No items selected.</p>
+              }
+            </div>
+          </section>
+        }
+      </div>
+    </article>
+  }
+</main>

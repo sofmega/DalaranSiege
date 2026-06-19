@@ -60,82 +60,67 @@
     @if (mode() === 'view') {
       <section class="build-list" aria-label="Public hero builds">
         @for (build of builds(); track build.id) {
-          <article class="build-panel">
-            <div class="build-panel-header">
-              <div>
-                <p class="eyebrow">Community Build</p>
-                <h2>{{ build.name }}</h2>
-                <p class="build-author">By {{ build.authorName }}</p>
-              </div>
-
-              <div class="build-actions">
-                @if (isOwner(build)) {
-                  <button type="button" class="secondary-button" (click)="editBuild(build)">Edit</button>
-                  <button type="button" class="danger-button" (click)="deleteBuild(build)">Delete</button>
-                }
-
-                <div class="vote-panel" aria-label="Build votes">
-                  <button
-                    type="button"
-                    class="vote-button"
-                    [class.active]="build.currentUserVote === 1"
-                    (click)="vote(build, 1)"
-                    aria-label="Upvote build"
-                  >+</button>
-                  <strong>{{ build.score }}</strong>
-                  <button
-                    type="button"
-                    class="vote-button"
-                    [class.active]="build.currentUserVote === -1"
-                    (click)="vote(build, -1)"
-                    aria-label="Downvote build"
-                  >-</button>
-                  <span>{{ build.upvotes }} up / {{ build.downvotes }} down</span>
-                </div>
-              </div>
+          <article
+            class="compact-build-card"
+            role="link"
+            tabindex="0"
+            (click)="openBuild(build)"
+            (keydown)="openBuildFromKeyboard($event, build)"
+            [attr.aria-label]="'Open build ' + build.name"
+          >
+            <div class="compact-vote" aria-label="Build votes" (click)="$event.stopPropagation()">
+              <button
+                type="button"
+                class="vote-arrow"
+                [class.active]="build.currentUserVote === 1"
+                (click)="vote(build, 1)"
+                aria-label="Upvote build"
+              >▲</button>
+              <strong>{{ build.score }}</strong>
+              <button
+                type="button"
+                class="vote-arrow"
+                [class.active]="build.currentUserVote === -1"
+                (click)="vote(build, -1)"
+                aria-label="Downvote build"
+              >▼</button>
             </div>
 
-            <div class="build-sections" aria-label="Selected build items">
-              @for (section of buildSections; track section.key) {
-                <section class="build-section" [attr.aria-label]="section.label + ' items'">
-                  <div class="section-heading">
-                    <div>
-                      <p class="eyebrow">{{ section.label }}</p>
-                      <p>{{ section.description }}</p>
-                    </div>
-                    <span class="section-count">{{ buildItems(build, section.key).length }}/6</span>
-                  </div>
-
-                  <div class="build-items">
-                    @for (item of buildItems(build, section.key); track item.id) {
-                      <article class="build-item">
-                        <div class="hero-icon">
-                          @if (!isImageBroken(item.id)) {
-                            <img
-                              [src]="item.iconUrl"
-                              [alt]="item.name + ' icon'"
-                              (error)="markImageBroken(item.id)"
-                            />
-                          } @else {
-                            <span>{{ initials(item.name) }}</span>
-                          }
-                        </div>
-                        <div>
-                          <h3>{{ item.name }}</h3>
-                          <p>{{ item.itemClass }} - {{ item.price }} gold</p>
-                        </div>
-                      </article>
-                    } @empty {
-                      <p class="empty-section">No items selected.</p>
-                    }
-                  </div>
-                </section>
-              }
+            <div class="compact-build-copy">
+              <h2>{{ build.name }}</h2>
+              <p class="compact-build-author">Build created by {{ build.authorName }}</p>
             </div>
 
-            @if (build.notes) {
-              <p class="build-notes">{{ build.notes }}</p>
+            @if (isOwner(build)) {
+              <div class="compact-build-actions" (click)="$event.stopPropagation()">
+                <button type="button" class="secondary-button" (click)="editBuild(build)">Edit</button>
+                <button type="button" class="danger-button" (click)="deleteBuild(build)">Delete</button>
+              </div>
             }
+
+            <section class="core-preview" aria-label="Core Build preview">
+              <p class="core-preview-label">Core Build</p>
+              <div class="core-preview-items">
+                @for (item of coreBuildItems(build); track $index) {
+                  <div class="core-preview-item">
+                    <div class="core-preview-icon">
+                      @if (!isImageBroken(item.id)) {
+                        <img
+                          [src]="item.iconUrl"
+                          [alt]="item.name + ' icon'"
+                          (error)="markImageBroken(item.id)"
+                        />
+                      } @else {
+                        <span>{{ initials(item.name) }}</span>
+                      }
+                    </div>
+                    <span>{{ item.name }}</span>
+                  </div>
+                } @empty {
+                  <p class="empty-core-preview">No core items.</p>
+                }
+              </div>
+            </section>
           </article>
         } @empty {
           <section class="build-panel">
@@ -159,7 +144,7 @@
           <div>
             <p class="eyebrow">Build Sections</p>
             <h2>{{ editingBuildId() ? 'Edit build items' : 'Choose items for each stage' }}</h2>
-            <p class="section-intro">Select up to 6 items in each section. Choosing an item in a new section moves it there.</p>
+            <p class="section-intro">Select up to 6 item slots in each section. The same item can fill multiple slots.</p>
           </div>
         </div>
 
@@ -174,14 +159,34 @@
                 <span class="section-count">{{ selectedItemIds(section.key).length }}/6</span>
               </div>
 
+              <div class="selected-slots" [attr.aria-label]="section.label + ' selected slots'">
+                @for (itemId of selectedItemIds(section.key); track $index) {
+                  @if (itemById().get(itemId); as selectedItem) {
+                    <button
+                      type="button"
+                      class="selected-slot"
+                      (click)="removeItemAt(section.key, $index)"
+                      [attr.aria-label]="'Remove ' + selectedItem.name + ' from slot ' + ($index + 1)"
+                    >
+                      <span class="slot-position">{{ $index + 1 }}</span>
+                      <span class="slot-name">{{ selectedItem.name }}</span>
+                      <span class="slot-remove" aria-hidden="true">×</span>
+                    </button>
+                  }
+                } @empty {
+                  <p class="empty-slots">No item slots selected.</p>
+                }
+              </div>
+
               <div class="item-picker" [attr.aria-label]="section.label + ' item picker'">
                 @for (item of items(); track item.id) {
                   <button
                     type="button"
                     class="picker-item"
                     [class.selected]="isSelected(section.key, item.id)"
-                    [disabled]="selectedItemIds(section.key).length >= 6 && !isSelected(section.key, item.id)"
-                    (click)="toggleItem(section.key, item.id)"
+                    [disabled]="selectedItemIds(section.key).length >= 6"
+                    (click)="addItem(section.key, item.id)"
+                    [attr.aria-label]="'Add ' + item.name + ' to ' + section.label"
                   >
                     <span class="hero-icon">
                       @if (!isImageBroken(item.id)) {
@@ -194,7 +199,10 @@
                         <span>{{ initials(item.name) }}</span>
                       }
                     </span>
-                    <span>{{ item.name }}</span>
+                    <span class="picker-item-name">{{ item.name }}</span>
+                    @if (itemQuantity(section.key, item.id) > 0) {
+                      <span class="item-quantity">×{{ itemQuantity(section.key, item.id) }}</span>
+                    }
                   </button>
                 }
               </div>

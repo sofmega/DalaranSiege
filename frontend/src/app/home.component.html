@@ -75,9 +75,15 @@
 
     <section class="item-grid" aria-label="Dalaran Siege item list">
       @for (item of filteredItems(); track item.id) {
-        <article class="item-card" tabindex="0">
+        <a
+          class="item-card item-link"
+          [routerLink]="['/items', item.id]"
+          target="_blank"
+          rel="noopener noreferrer"
+          [attr.aria-label]="'Open details for ' + item.name + ' in a new tab'"
+        >
           <div class="item-main">
-            <div class="hero-icon">
+            <div class="hero-icon item-card-icon">
               @if (!isImageBroken(item.id)) {
                 <img
                   [src]="item.iconUrl"
@@ -91,10 +97,14 @@
 
             <div class="hero-details">
               <h2>{{ item.name }}</h2>
-              <p class="hero-class">{{ item.itemClass }} - {{ item.price }} gold</p>
-              <div class="roles" aria-label="Item bonuses">
-                @for (bonus of item.bonuses; track bonus) {
+              <p class="hero-class">{{ item.itemClass }}</p>
+              <p class="item-total-price">{{ totalItemCost(item) }} gold</p>
+              <div class="roles item-card-bonuses" aria-label="Item bonuses">
+                @for (bonus of item.bonuses.slice(0, 3); track $index) {
                   <span>{{ bonus }}</span>
+                }
+                @if (item.bonuses.length > 3) {
+                  <span>+{{ item.bonuses.length - 3 }} more</span>
                 }
               </div>
             </div>
@@ -104,9 +114,21 @@
             <h3>{{ item.name }}</h3>
             <p>{{ item.description }}</p>
 
+            @if (item.bonuses.length) {
+              <div class="tooltip-bonuses" aria-label="Bonuses">
+                @for (bonus of item.bonuses; track $index) {
+                  <span>{{ bonus }}</span>
+                }
+              </div>
+            }
+
             <dl>
               <div>
-                <dt>Price</dt>
+                <dt>Total cost</dt>
+                <dd>{{ totalItemCost(item) }} gold</dd>
+              </div>
+              <div>
+                <dt>Recipe cost</dt>
                 <dd>{{ item.price }} gold</dd>
               </div>
               @if (item.range !== null) {
@@ -126,15 +148,15 @@
             @if (item.requirements.length) {
               <p class="requirements">
                 Requires:
-                @for (requirement of item.requirements; track requirement.itemId) {
+                @for (requirement of item.requirements; track $index) {
                   <span>{{ formatRequirement(requirement) }}</span>
                 }
               </p>
             }
 
-            <p class="requirements">Sold by: {{ item.shopIds.join(', ') }}</p>
+            <p class="requirements">Sold by: {{ shopNamesForItem(item) }}</p>
           </div>
-        </article>
+        </a>
       } @empty {
         <p class="state">No items found for this shop.</p>
       }

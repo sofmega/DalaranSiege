@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { GameDataService, HeroDto, ItemDto, ItemRequirement, Shop } from './game-data.service';
+import { calculateTotalItemCost, itemShopNames } from './item-data.utils';
 import { SupabaseAuthService } from './supabase-auth.service';
 
 type ViewMode = 'heroes' | 'items';
@@ -24,6 +25,15 @@ export class HomeComponent {
   protected readonly errorMessage = signal('');
   protected readonly brokenIconIds = signal(new Set<string>());
   private pendingRequests = 3;
+
+  protected readonly itemById = computed(() => new Map(this.items().map((item) => [item.id, item])));
+  private readonly shopById = computed(() => new Map(this.shops().map((shop) => [shop.id, shop])));
+  private readonly totalCosts = computed(() => {
+    const costs = new Map<string, number>();
+    const itemById = this.itemById();
+    this.items().forEach((item) => calculateTotalItemCost(item, itemById, costs));
+    return costs;
+  });
 
   constructor() {
     this.route.queryParamMap.subscribe((params) => {
@@ -63,7 +73,17 @@ export class HomeComponent {
   }
 
   protected formatRequirement(requirement: ItemRequirement): string {
-    return `${requirement.quantity}x ${this.formatLabel(requirement.itemId).replaceAll('-', ' ')}`;
+    const item = this.itemById().get(requirement.itemId);
+    return `${requirement.quantity}× ${item?.name ?? this.formatLabel(requirement.itemId).replaceAll('-', ' ')}`;
+  }
+
+  protected totalItemCost(item: ItemDto): number {
+    return this.totalCosts().get(item.id) ?? item.price;
+  }
+
+  protected shopNamesForItem(item: ItemDto): string {
+    const names = itemShopNames(item, this.shopById());
+    return names.length ? names.join(', ') : 'Not listed';
   }
 
   protected markImageBroken(iconId: string): void {

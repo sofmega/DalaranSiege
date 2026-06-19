@@ -1,0 +1,144 @@
+<main class="page item-detail-page">
+  <nav class="top-nav" aria-label="Primary navigation">
+    <a class="brand-link" routerLink="/">DalaranSiege</a>
+
+    <div class="nav-links">
+      <a routerLink="/" [queryParams]="{ view: 'heroes' }">Heroes</a>
+      <a routerLink="/" [queryParams]="{ view: 'items' }" class="active">Items</a>
+    </div>
+
+    <div class="account-bar nav-account" aria-label="Account">
+      @if (authService.isAuthenticated()) {
+        <span>{{ authService.displayName() }}</span>
+        <button type="button" class="secondary-button" (click)="signOut()">Logout</button>
+      } @else {
+        <span>Visitor</span>
+        <a class="secondary-link" routerLink="/auth">Login</a>
+      }
+    </div>
+  </nav>
+
+  <a class="back-link" routerLink="/" [queryParams]="{ view: 'items' }">← Back to items</a>
+
+  @if (isLoading()) {
+    <p class="state">Loading item...</p>
+  } @else if (errorMessage()) {
+    <p class="state error">{{ errorMessage() }}</p>
+  } @else if (selectedItem(); as item) {
+    <article class="item-detail-card">
+      <header class="item-detail-header">
+        <div class="item-detail-icon">
+          @if (!isImageBroken(item.id)) {
+            <img [src]="item.iconUrl" [alt]="item.name + ' icon'" (error)="markImageBroken(item.id)" />
+          } @else {
+            <span>{{ initials(item.name) }}</span>
+          }
+        </div>
+
+        <div class="item-detail-title">
+          <p class="eyebrow">{{ item.itemClass }}</p>
+          <h1>{{ item.name }}</h1>
+          <p>{{ item.description }}</p>
+        </div>
+
+        <dl class="item-price-summary">
+          <div>
+            <dt>Total cost</dt>
+            <dd>{{ totalItemCost(item) }} gold</dd>
+          </div>
+          <div>
+            <dt>Recipe cost</dt>
+            <dd>{{ item.price }} gold</dd>
+          </div>
+          <div>
+            <dt>Sold by</dt>
+            <dd>{{ shopNamesForItem(item) }}</dd>
+          </div>
+        </dl>
+      </header>
+
+      <div class="item-detail-meta">
+        @if (item.bonuses.length) {
+          <section class="item-detail-panel">
+            <p class="eyebrow">Bonuses</p>
+            <div class="detail-badges">
+              @for (bonus of item.bonuses; track $index) {
+                <span>{{ bonus }}</span>
+              }
+            </div>
+          </section>
+        }
+
+        <section class="item-detail-panel">
+          <p class="eyebrow">Stats</p>
+          <dl class="detail-stats">
+            @if (item.range !== null) {
+              <div><dt>Range</dt><dd>{{ item.range }}</dd></div>
+            }
+            @for (stat of statEntries(item.stats); track stat[0]) {
+              <div><dt>{{ formatLabel(stat[0]) }}</dt><dd>{{ stat[1] }}</dd></div>
+            } @empty {
+              @if (item.range === null) {
+                <div><dt>Stats</dt><dd>No additional stats</dd></div>
+              }
+            }
+          </dl>
+        </section>
+      </div>
+
+      <section class="recipe-section">
+        <div class="recipe-heading">
+          <p class="eyebrow">Crafting</p>
+          <h2>Recipe</h2>
+        </div>
+
+        @if (item.requirements.length) {
+          <div class="recipe-tree" aria-label="Item crafting tree">
+            @for (node of recipeTree(); track node.path) {
+              <div class="recipe-tree-row" [style.--tree-depth]="node.depth">
+                <span class="recipe-connector" aria-hidden="true"></span>
+                @if (node.item; as treeItem) {
+                  <a class="recipe-node" [routerLink]="['/items', treeItem.id]">
+                    <div class="recipe-node-icon">
+                      @if (!isImageBroken(treeItem.id)) {
+                        <img
+                          [src]="treeItem.iconUrl"
+                          [alt]="treeItem.name + ' icon'"
+                          (error)="markImageBroken(treeItem.id)"
+                        />
+                      } @else {
+                        <span>{{ initials(treeItem.name) }}</span>
+                      }
+                    </div>
+                    <div class="recipe-node-copy">
+                      <strong>{{ treeItem.name }}</strong>
+                      <span>Total {{ totalItemCost(treeItem) }} · Recipe {{ treeItem.price }} gold</span>
+                    </div>
+                    @if (node.quantity > 1) {
+                      <span class="recipe-quantity">×{{ node.quantity }}</span>
+                    }
+                    @if (node.cycle) {
+                      <span class="recipe-cycle">Cycle stopped</span>
+                    }
+                  </a>
+                } @else {
+                  <div class="recipe-node missing-recipe-node">
+                    <div class="recipe-node-copy">
+                      <strong>{{ node.itemId }}</strong>
+                      <span>Item data unavailable</span>
+                    </div>
+                    @if (node.quantity > 1) {
+                      <span class="recipe-quantity">×{{ node.quantity }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="no-recipe">No recipe required. This item can be bought directly.</p>
+        }
+      </section>
+    </article>
+  }
+</main>

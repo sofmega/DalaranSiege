@@ -1,6 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GameDataService, HeroBuildDto, HeroDto, ItemDto } from './game-data.service';
 import { SupabaseAuthService } from './supabase-auth.service';
 
@@ -14,6 +14,7 @@ type BuildSection = 'early' | 'core' | 'optional';
 })
 export class HeroBuildComponent {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly gameDataService = inject(GameDataService);
   protected readonly authService = inject(SupabaseAuthService);
   private readonly heroId = this.route.snapshot.paramMap.get('id') ?? '';
@@ -95,21 +96,25 @@ export class HeroBuildComponent {
     this.mode.set('view');
   }
 
-  protected toggleItem(section: BuildSection, itemId: string): void {
+  protected addItem(section: BuildSection, itemId: string): void {
     const selected = this.selectedItemIds(section);
-
-    if (selected.includes(itemId)) {
-      this.setSelectedItemIds(section, selected.filter((id) => id !== itemId));
-      return;
-    }
 
     if (selected.length >= 6) {
       return;
     }
 
-    // An item belongs to only one section. Selecting it elsewhere moves it.
-    this.removeItemFromAllSections(itemId);
-    this.setSelectedItemIds(section, [...this.selectedItemIds(section), itemId]);
+    this.setSelectedItemIds(section, [...selected, itemId]);
+  }
+
+  protected removeItemAt(section: BuildSection, position: number): void {
+    this.setSelectedItemIds(
+      section,
+      this.selectedItemIds(section).filter((_, index) => index !== position)
+    );
+  }
+
+  protected itemQuantity(section: BuildSection, itemId: string): number {
+    return this.selectedItemIds(section).filter((id) => id === itemId).length;
   }
 
   protected updateBuildName(event: Event): void {
@@ -198,6 +203,25 @@ export class HeroBuildComponent {
         this.authMessage.set('Could not save your vote. Check that you are still logged in.');
       }
     });
+  }
+
+  protected openBuild(build: HeroBuildDto): void {
+    void this.router.navigate(['/heroes', this.heroId, 'builds', build.id]);
+  }
+
+  protected openBuildFromKeyboard(event: KeyboardEvent, build: HeroBuildDto): void {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      this.openBuild(build);
+    }
+  }
+
+  protected coreBuildItems(build: HeroBuildDto): ItemDto[] {
+    return this.buildItems(build, 'core');
   }
 
   protected buildItems(build: HeroBuildDto, section: BuildSection): ItemDto[] {
@@ -306,12 +330,6 @@ export class HeroBuildComponent {
         this.optionalItemIds.set(itemIds);
         break;
     }
-  }
-
-  private removeItemFromAllSections(itemId: string): void {
-    this.earlyItemIds.update((itemIds) => itemIds.filter((id) => id !== itemId));
-    this.coreItemIds.update((itemIds) => itemIds.filter((id) => id !== itemId));
-    this.optionalItemIds.update((itemIds) => itemIds.filter((id) => id !== itemId));
   }
 
   private clearSelectedItems(): void {
