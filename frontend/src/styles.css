@@ -729,8 +729,8 @@ h3 {
   border: 1px solid var(--border);
   border-radius: 10px;
   background:
-    linear-gradient(rgb(255 255 255 / 2%) 1px, transparent 1px),
-    var(--tooltip-bg);
+    linear-gradient(var(--decor-line) 1px, transparent 1px),
+    var(--panel-light);
   background-size: 100% 60px;
 }
 
@@ -763,8 +763,8 @@ h3 {
   padding: 7px 12px 7px 7px;
   border: 1px solid var(--border);
   border-radius: 8px;
-  color: inherit;
-  background: rgb(18 26 43 / 94%);
+  color: var(--text);
+  background: var(--panel-solid);
   text-decoration: none;
 }
 
