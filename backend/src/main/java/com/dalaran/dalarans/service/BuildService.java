@@ -7,6 +7,8 @@ import com.dalaran.dalarans.dto.UpdateBuildRequest;
 import com.dalaran.dalarans.dto.VoteBuildRequest;
 import com.dalaran.dalarans.exception.BuildLimitExceededException;
 import com.dalaran.dalarans.exception.ForbiddenBuildAccessException;
+import com.dalaran.dalarans.exception.InvalidBuildItemsException;
+import com.dalaran.dalarans.repository.ItemRepository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -25,10 +27,12 @@ public class BuildService {
 
     private final JdbcTemplate jdbcTemplate;
     private final ProfileService profileService;
+    private final ItemRepository itemRepository;
 
-    public BuildService(JdbcTemplate jdbcTemplate, ProfileService profileService) {
+    public BuildService(JdbcTemplate jdbcTemplate, ProfileService profileService, ItemRepository itemRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.profileService = profileService;
+        this.itemRepository = itemRepository;
     }
 
     public List<BuildDto> findPublicBuilds(String heroId, Jwt jwt) {
@@ -73,10 +77,10 @@ public class BuildService {
                 (Integer) rs.getObject("current_user_vote")
         ), currentUserId, heroId);
 
-        Map<UUID, List<String>> itemIdsByBuild = findItemIdsByBuild(rows.stream().map(BuildRow::id).toList());
+        Map<UUID, ItemSections> itemsByBuild = findItemsByBuild(rows.stream().map(BuildRow::id).toList());
 
         return rows.stream()
-                .map(row -> row.toDto(itemIdsByBuild.getOrDefault(row.id(), List.of())))
+                .map(row -> row.toDto(itemsByBuild.getOrDefault(row.id(), ItemSections.empty())))
                 .toList();
     }
 
@@ -94,11 +98,12 @@ public class BuildService {
             throw new BuildLimitExceededException();
         }
 
-        List<String> itemIds = request.itemIds().stream()
-                .map(String::trim)
-                .filter(itemId -> !itemId.isBlank())
-                .limit(6)
-                .toList();
+        ItemSections items = resolveAndValidateItems(
+                request.earlyItemIds(),
+                request.coreItemIds(),
+                request.optionalItemIds(),
+                request.itemIds()
+        );
 
         UUID buildId = jdbcTemplate.queryForObject("""
                 insert into public.builds (user_id, hero_id, name, notes, is_public)
@@ -106,12 +111,7 @@ public class BuildService {
                 returning id
                 """, UUID.class, user.id(), request.heroId().trim(), request.name().trim(), cleanNotes(request.notes()));
 
-        for (int i = 0; i < itemIds.size(); i++) {
-            jdbcTemplate.update("""
-                    insert into public.build_items (build_id, item_id, slot_index)
-                    values (?, ?, ?)
-                    """, buildId, itemIds.get(i), i);
-        }
+        insertItems(buildId, items);
 
         return findPublicBuilds(request.heroId(), jwt).stream()
                 .filter(build -> build.id().equals(buildId))
@@ -129,11 +129,12 @@ public class BuildService {
             throw new ForbiddenBuildAccessException();
         }
 
-        List<String> itemIds = request.itemIds().stream()
-                .map(String::trim)
-                .filter(itemId -> !itemId.isBlank())
-                .limit(6)
-                .toList();
+        ItemSections items = resolveAndValidateItems(
+                request.earlyItemIds(),
+                request.coreItemIds(),
+                request.optionalItemIds(),
+                request.itemIds()
+        );
 
         jdbcTemplate.update("""
                 update public.builds
@@ -142,12 +143,7 @@ public class BuildService {
                 """, request.name().trim(), cleanNotes(request.notes()), buildId);
         jdbcTemplate.update("delete from public.build_items where build_id = ?", buildId);
 
-        for (int i = 0; i < itemIds.size(); i++) {
-            jdbcTemplate.update("""
-                    insert into public.build_items (build_id, item_id, slot_index)
-                    values (?, ?, ?)
-                    """, buildId, itemIds.get(i), i);
-        }
+        insertItems(buildId, items);
 
         return findPublicBuilds(buildOwner.heroId(), jwt).stream()
                 .filter(build -> build.id().equals(buildId))
@@ -196,25 +192,92 @@ public class BuildService {
                 .orElseThrow();
     }
 
-    private Map<UUID, List<String>> findItemIdsByBuild(List<UUID> buildIds) {
-        Map<UUID, List<String>> result = new LinkedHashMap<>();
+    Map<UUID, ItemSections> findItemsByBuild(List<UUID> buildIds) {
+        Map<UUID, MutableItemSections> result = new LinkedHashMap<>();
 
         if (buildIds.isEmpty()) {
-            return result;
+            return Map.of();
         }
 
         String placeholders = String.join(",", buildIds.stream().map(id -> "?").toList());
         jdbcTemplate.query("""
-                select build_id, item_id
+                select build_id, item_id, section
                 from public.build_items
                 where build_id in (%s)
-                order by build_id, slot_index
+                order by build_id, section, position
                 """.formatted(placeholders), rs -> {
             UUID buildId = rs.getObject("build_id", UUID.class);
-            result.computeIfAbsent(buildId, ignored -> new ArrayList<>()).add(rs.getString("item_id"));
+            BuildItemSection section = BuildItemSection.valueOf(rs.getString("section"));
+            result.computeIfAbsent(buildId, ignored -> new MutableItemSections())
+                    .items(section)
+                    .add(rs.getString("item_id"));
         }, buildIds.toArray());
 
-        return result;
+        Map<UUID, ItemSections> immutableResult = new LinkedHashMap<>();
+        result.forEach((buildId, sections) -> immutableResult.put(buildId, sections.toImmutable()));
+        return immutableResult;
+    }
+
+    ItemSections resolveAndValidateItems(
+            List<String> earlyItemIds,
+            List<String> coreItemIds,
+            List<String> optionalItemIds,
+            List<String> legacyItemIds
+    ) {
+        boolean hasSectionedFields = earlyItemIds != null || coreItemIds != null || optionalItemIds != null;
+        ItemSections items = new ItemSections(
+                normalizeSection("earlyItemIds", earlyItemIds),
+                normalizeSection("coreItemIds", hasSectionedFields ? coreItemIds : legacyItemIds),
+                normalizeSection("optionalItemIds", optionalItemIds)
+        );
+
+        List<String> allItems = items.allItems();
+        if (allItems.isEmpty()) {
+            throw new InvalidBuildItemsException("A build must contain at least one item.");
+        }
+
+        List<String> existingItemIds = new ArrayList<>();
+        itemRepository.findAllById(allItems).forEach(item -> existingItemIds.add(item.getId()));
+        List<String> invalidItemIds = allItems.stream()
+                .distinct()
+                .filter(itemId -> !existingItemIds.contains(itemId))
+                .toList();
+        if (!invalidItemIds.isEmpty()) {
+            throw new InvalidBuildItemsException("Unknown item IDs: " + String.join(", ", invalidItemIds));
+        }
+
+        return items;
+    }
+
+    private List<String> normalizeSection(String fieldName, List<String> itemIds) {
+        if (itemIds == null) {
+            return List.of();
+        }
+        if (itemIds.size() > 6) {
+            throw new InvalidBuildItemsException(fieldName + " must contain at most 6 items.");
+        }
+
+        return itemIds.stream().map(itemId -> {
+            if (itemId == null || itemId.isBlank()) {
+                throw new InvalidBuildItemsException(fieldName + " cannot contain blank item IDs.");
+            }
+            return itemId.trim();
+        }).toList();
+    }
+
+    private void insertItems(UUID buildId, ItemSections items) {
+        insertSection(buildId, BuildItemSection.EARLY, items.earlyItems());
+        insertSection(buildId, BuildItemSection.CORE, items.coreItems());
+        insertSection(buildId, BuildItemSection.OPTIONAL, items.optionalItems());
+    }
+
+    private void insertSection(UUID buildId, BuildItemSection section, List<String> itemIds) {
+        for (int position = 0; position < itemIds.size(); position++) {
+            jdbcTemplate.update("""
+                    insert into public.build_items (build_id, item_id, section, position)
+                    values (?, ?, ?, ?)
+                    """, buildId, itemIds.get(position), section.name(), position);
+        }
     }
 
     private BuildOwner findBuildOwner(UUID buildId) {
@@ -236,7 +299,7 @@ public class BuildService {
         return timestamp == null ? null : timestamp.toInstant();
     }
 
-    private record BuildRow(
+    record BuildRow(
             UUID id,
             String heroId,
             String name,
@@ -250,7 +313,7 @@ public class BuildService {
             int downvotes,
             Integer currentUserVote
     ) {
-        BuildDto toDto(List<String> itemIds) {
+        BuildDto toDto(ItemSections items) {
             return new BuildDto(
                     id,
                     heroId,
@@ -258,7 +321,10 @@ public class BuildService {
                     notes,
                     authorId,
                     authorName,
-                    itemIds,
+                    items.earlyItems(),
+                    items.coreItems(),
+                    items.optionalItems(),
+                    items.coreItems(),
                     score,
                     upvotes,
                     downvotes,
@@ -270,5 +336,44 @@ public class BuildService {
     }
 
     private record BuildOwner(UUID userId, String heroId) {
+    }
+
+    private enum BuildItemSection {
+        EARLY,
+        CORE,
+        OPTIONAL
+    }
+
+    record ItemSections(List<String> earlyItems, List<String> coreItems, List<String> optionalItems) {
+
+        static ItemSections empty() {
+            return new ItemSections(List.of(), List.of(), List.of());
+        }
+
+        List<String> allItems() {
+            List<String> result = new ArrayList<>(earlyItems.size() + coreItems.size() + optionalItems.size());
+            result.addAll(earlyItems);
+            result.addAll(coreItems);
+            result.addAll(optionalItems);
+            return result;
+        }
+    }
+
+    private static final class MutableItemSections {
+        private final List<String> earlyItems = new ArrayList<>();
+        private final List<String> coreItems = new ArrayList<>();
+        private final List<String> optionalItems = new ArrayList<>();
+
+        List<String> items(BuildItemSection section) {
+            return switch (section) {
+                case EARLY -> earlyItems;
+                case CORE -> coreItems;
+                case OPTIONAL -> optionalItems;
+            };
+        }
+
+        ItemSections toImmutable() {
+            return new ItemSections(List.copyOf(earlyItems), List.copyOf(coreItems), List.copyOf(optionalItems));
+        }
     }
 }

@@ -11,6 +11,10 @@ public record BuildDto(
         String notes,
         UUID authorId,
         String authorName,
+        List<String> earlyItems,
+        List<String> coreItems,
+        List<String> optionalItems,
+        // Legacy alias for coreItems. Remove after the frontend migration.
         List<String> itemIds,
         int score,
         int upvotes,

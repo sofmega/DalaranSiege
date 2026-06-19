@@ -40,7 +40,11 @@ export interface HeroBuildDto {
   notes: string;
   authorId: string;
   authorName: string;
-  itemIds: string[];
+  earlyItems?: string[];
+  coreItems?: string[];
+  optionalItems?: string[];
+  /** Legacy CORE alias returned during the frontend migration. */
+  itemIds?: string[];
   score: number;
   upvotes: number;
   downvotes: number;
@@ -53,7 +57,9 @@ export interface CreateBuildRequest {
   heroId: string;
   name: string;
   notes: string;
-  itemIds: string[];
+  earlyItemIds: string[];
+  coreItemIds: string[];
+  optionalItemIds: string[];
 }
 
 @Injectable({ providedIn: 'root' })

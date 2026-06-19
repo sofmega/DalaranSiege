@@ -505,6 +505,120 @@ h3 {
   gap: 12px;
 }
 
+.build-sections,
+.section-pickers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.build-section,
+.section-picker {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgb(8 13 24 / 48%);
+}
+
+.section-picker {
+  border-top-width: 3px;
+}
+
+.section-early {
+  border-top-color: #64b5f6;
+}
+
+.section-core {
+  border-top-color: var(--gold);
+}
+
+.section-optional {
+  border-top-color: #b388ff;
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.section-heading .eyebrow {
+  margin-bottom: 5px;
+}
+
+.section-heading p:not(.eyebrow),
+.section-intro,
+.empty-section {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.section-heading h3 {
+  color: var(--muted-strong);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.section-count {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--gold);
+  background: var(--gold-soft);
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.build-section .build-items {
+  grid-template-columns: 1fr;
+}
+
+.build-section .build-item {
+  padding: 9px;
+}
+
+.build-section .hero-icon {
+  width: 48px;
+  height: 48px;
+  flex-basis: 48px;
+}
+
+.section-builder-header {
+  margin-bottom: 18px;
+}
+
+.section-intro {
+  margin-top: 7px;
+}
+
+.section-picker .item-picker {
+  grid-template-columns: 1fr;
+  max-height: 540px;
+  margin: 0;
+  padding-right: 5px;
+  overflow-y: auto;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.picker-item:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.picker-item:disabled:hover {
+  border-color: var(--border);
+  background: rgb(8 13 24 / 62%);
+}
+
+.save-build-button {
+  margin-top: 20px;
+}
+
 .build-item {
   display: flex;
   align-items: center;
@@ -738,6 +852,15 @@ h3 {
   .build-actions,
   .vote-panel {
     justify-content: flex-start;
+  }
+
+  .build-sections,
+  .section-pickers {
+    grid-template-columns: 1fr;
+  }
+
+  .section-picker .item-picker {
+    max-height: 420px;
   }
 
   .view-switcher {

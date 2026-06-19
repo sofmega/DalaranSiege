@@ -5,6 +5,7 @@ import { GameDataService, HeroBuildDto, HeroDto, ItemDto } from './game-data.ser
 import { SupabaseAuthService } from './supabase-auth.service';
 
 type BuildMode = 'view' | 'create';
+type BuildSection = 'early' | 'core' | 'optional';
 
 @Component({
   selector: 'app-hero-build',
@@ -25,16 +26,27 @@ export class HeroBuildComponent {
   protected readonly errorMessage = signal('');
   protected readonly brokenIconIds = signal(new Set<string>());
   protected readonly buildName = signal('');
-  protected readonly selectedItemIds = signal<string[]>([]);
+  protected readonly earlyItemIds = signal<string[]>([]);
+  protected readonly coreItemIds = signal<string[]>([]);
+  protected readonly optionalItemIds = signal<string[]>([]);
   protected readonly notes = signal('');
   protected readonly authMessage = signal('');
   protected readonly editingBuildId = signal<string | null>(null);
   private pendingRequests = 3;
 
-  protected readonly selectedItems = computed(() => {
-    const selectedIds = new Set(this.selectedItemIds());
-    return this.items().filter((item) => selectedIds.has(item.id));
-  });
+  protected readonly buildSections: ReadonlyArray<{
+    key: BuildSection;
+    label: string;
+    description: string;
+  }> = [
+    { key: 'early', label: 'Early Build', description: 'Opening items and first purchases.' },
+    { key: 'core', label: 'Core Build', description: 'The essential items for this build.' },
+    { key: 'optional', label: 'Optional', description: 'Situational and alternative choices.' }
+  ];
+
+  protected readonly hasSelectedItems = computed(() =>
+    this.earlyItemIds().length + this.coreItemIds().length + this.optionalItemIds().length > 0
+  );
 
   protected readonly itemById = computed(() => new Map(this.items().map((item) => [item.id, item])));
 
@@ -57,7 +69,7 @@ export class HeroBuildComponent {
 
     this.editingBuildId.set(null);
     this.buildName.set(`${this.hero()?.name ?? 'Hero'} Build`);
-    this.selectedItemIds.set([]);
+    this.clearSelectedItems();
     this.notes.set('');
     this.authMessage.set('');
     this.mode.set('create');
@@ -70,7 +82,9 @@ export class HeroBuildComponent {
 
     this.editingBuildId.set(build.id);
     this.buildName.set(build.name);
-    this.selectedItemIds.set(build.itemIds);
+    this.earlyItemIds.set(build.earlyItems ?? []);
+    this.coreItemIds.set(build.coreItems ?? build.itemIds ?? []);
+    this.optionalItemIds.set(build.optionalItems ?? []);
     this.notes.set(build.notes);
     this.authMessage.set('');
     this.mode.set('create');
@@ -81,11 +95,11 @@ export class HeroBuildComponent {
     this.mode.set('view');
   }
 
-  protected toggleItem(itemId: string): void {
-    const selected = this.selectedItemIds();
+  protected toggleItem(section: BuildSection, itemId: string): void {
+    const selected = this.selectedItemIds(section);
 
     if (selected.includes(itemId)) {
-      this.selectedItemIds.set(selected.filter((id) => id !== itemId));
+      this.setSelectedItemIds(section, selected.filter((id) => id !== itemId));
       return;
     }
 
@@ -93,7 +107,9 @@ export class HeroBuildComponent {
       return;
     }
 
-    this.selectedItemIds.set([...selected, itemId]);
+    // An item belongs to only one section. Selecting it elsewhere moves it.
+    this.removeItemFromAllSections(itemId);
+    this.setSelectedItemIds(section, [...this.selectedItemIds(section), itemId]);
   }
 
   protected updateBuildName(event: Event): void {
@@ -116,7 +132,9 @@ export class HeroBuildComponent {
     const editingBuildId = this.editingBuildId();
     const request = {
       name: this.buildName().trim() || `${this.hero()?.name ?? 'Hero'} Build`,
-      itemIds: this.selectedItemIds(),
+      earlyItemIds: this.earlyItemIds(),
+      coreItemIds: this.coreItemIds(),
+      optionalItemIds: this.optionalItemIds(),
       notes: this.notes().trim()
     };
 
@@ -135,7 +153,7 @@ export class HeroBuildComponent {
         });
         this.buildName.set(`${this.hero()?.name ?? 'Hero'} Build`);
         this.editingBuildId.set(null);
-        this.selectedItemIds.set([]);
+        this.clearSelectedItems();
         this.notes.set('');
         this.authMessage.set('');
         this.mode.set('view');
@@ -182,9 +200,9 @@ export class HeroBuildComponent {
     });
   }
 
-  protected buildItems(build: HeroBuildDto): ItemDto[] {
+  protected buildItems(build: HeroBuildDto, section: BuildSection): ItemDto[] {
     const itemById = this.itemById();
-    return build.itemIds
+    return this.buildItemIds(build, section)
       .map((itemId) => itemById.get(itemId))
       .filter((item): item is ItemDto => item !== undefined);
   }
@@ -193,8 +211,12 @@ export class HeroBuildComponent {
     return this.authService.userId() === build.authorId;
   }
 
-  protected isSelected(itemId: string): boolean {
-    return this.selectedItemIds().includes(itemId);
+  protected isSelected(section: BuildSection, itemId: string): boolean {
+    return this.selectedItemIds(section).includes(itemId);
+  }
+
+  protected selectedItemIds(section: BuildSection): string[] {
+    return switchSection(section, this.earlyItemIds(), this.coreItemIds(), this.optionalItemIds());
   }
 
   protected markImageBroken(iconId: string): void {
@@ -261,5 +283,51 @@ export class HeroBuildComponent {
     if (this.pendingRequests <= 0 || this.errorMessage()) {
       this.isLoading.set(false);
     }
+  }
+
+  private buildItemIds(build: HeroBuildDto, section: BuildSection): string[] {
+    return switchSection(
+      section,
+      build.earlyItems ?? [],
+      build.coreItems ?? build.itemIds ?? [],
+      build.optionalItems ?? []
+    );
+  }
+
+  private setSelectedItemIds(section: BuildSection, itemIds: string[]): void {
+    switch (section) {
+      case 'early':
+        this.earlyItemIds.set(itemIds);
+        break;
+      case 'core':
+        this.coreItemIds.set(itemIds);
+        break;
+      case 'optional':
+        this.optionalItemIds.set(itemIds);
+        break;
+    }
+  }
+
+  private removeItemFromAllSections(itemId: string): void {
+    this.earlyItemIds.update((itemIds) => itemIds.filter((id) => id !== itemId));
+    this.coreItemIds.update((itemIds) => itemIds.filter((id) => id !== itemId));
+    this.optionalItemIds.update((itemIds) => itemIds.filter((id) => id !== itemId));
+  }
+
+  private clearSelectedItems(): void {
+    this.earlyItemIds.set([]);
+    this.coreItemIds.set([]);
+    this.optionalItemIds.set([]);
+  }
+}
+
+function switchSection<T>(section: BuildSection, early: T, core: T, optional: T): T {
+  switch (section) {
+    case 'early':
+      return early;
+    case 'core':
+      return core;
+    case 'optional':
+      return optional;
   }
 }

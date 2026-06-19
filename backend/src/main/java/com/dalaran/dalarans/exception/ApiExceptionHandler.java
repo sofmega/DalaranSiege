@@ -21,6 +21,11 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", exception.getMessage()));
     }
 
+    @ExceptionHandler(InvalidBuildItemsException.class)
+    ResponseEntity<Map<String, String>> handleInvalidBuildItems(InvalidBuildItemsException exception) {
+        return ResponseEntity.badRequest().body(Map.of("message", exception.getMessage()));
+    }
+
     @ExceptionHandler(EmptyResultDataAccessException.class)
     ResponseEntity<Map<String, String>> handleNotFound() {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message", "Resource not found."));
