@@ -1615,6 +1615,7 @@ a.recipe-node:focus-visible {
 }
 
 .auth-panel {
+  justify-self: center;
   width: min(520px, 100%);
   padding: 22px;
 }
