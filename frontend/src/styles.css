@@ -146,9 +146,19 @@ textarea {
 }
 
 .brand-link {
+  display: grid;
+  justify-items: start;
   color: var(--text);
   font-size: 1.05rem;
   letter-spacing: 0.02em;
+}
+
+.site-version {
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
 }
 
 .nav-links {
