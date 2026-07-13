@@ -8,4 +8,13 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.css'
 })
 export class App {
+  isAboutOpen = false;
+
+  toggleAbout(): void {
+    this.isAboutOpen = !this.isAboutOpen;
+  }
+
+  closeAbout(): void {
+    this.isAboutOpen = false;
+  }
 }
