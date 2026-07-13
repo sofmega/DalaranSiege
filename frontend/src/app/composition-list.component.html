@@ -1,0 +1,112 @@
+<main class="page">
+  <nav class="top-nav" aria-label="Primary navigation">
+    <a class="brand-link" routerLink="/">DalaranSiege</a>
+    <div class="nav-links">
+      <a routerLink="/" [queryParams]="{ view: 'heroes' }">Heroes</a>
+      <a routerLink="/" [queryParams]="{ view: 'items' }">Items</a>
+      <a routerLink="/compositions" class="active">Compos</a>
+    </div>
+    <div class="account-bar nav-account" aria-label="Account">
+      <app-theme-toggle />
+      @if (authService.isAuthenticated()) {
+        <span>{{ authService.displayName() }}</span>
+        <button type="button" class="secondary-button" (click)="signOut()">Logout</button>
+      } @else {
+        <a class="secondary-link" routerLink="/auth">Login</a>
+      }
+    </div>
+  </nav>
+
+  <header class="header">
+    <p class="eyebrow">Community Composition</p>
+    <h1>Community Compositions</h1>
+    <p class="summary">Discover teams created by the community, or arrange up to six heroes into your own composition.</p>
+    <div class="view-switcher" aria-label="Composition mode">
+      <button type="button" [class.active]="mode() === 'view'" (click)="showView()">View Compos</button>
+      @if (authService.isAuthenticated()) {
+        <button type="button" [class.active]="mode() === 'create'" (click)="showCreate()">Create Compo</button>
+      }
+    </div>
+  </header>
+
+  @if (!authService.isAuthenticated()) {
+    <p class="state">Anyone can browse compositions. <a routerLink="/auth">Login or register</a> to create and vote.</p>
+  }
+  @if (authMessage()) {
+    <p class="state" role="status">{{ authMessage() }} @if (!authService.isAuthenticated()) { <a routerLink="/auth">Login</a> }</p>
+  }
+  @if (isLoading()) {
+    <p class="state">Loading compositions...</p>
+  } @else if (errorMessage()) {
+    <p class="state error" role="alert">{{ errorMessage() }}</p>
+  } @else if (mode() === 'view') {
+    <section class="composition-list" aria-label="Public compositions">
+      @for (composition of compositions(); track composition.id) {
+        <article class="composition-card">
+          <div class="compact-vote" aria-label="Composition votes">
+            <button type="button" class="vote-arrow" [class.active]="composition.currentUserVote === 1" (click)="vote(composition, 1)" aria-label="Upvote composition">▲</button>
+            <strong>{{ composition.score }}</strong>
+            <button type="button" class="vote-arrow" [class.active]="composition.currentUserVote === -1" (click)="vote(composition, -1)" aria-label="Downvote composition">▼</button>
+          </div>
+          <div class="composition-card-copy">
+            <h2><a [routerLink]="['/compositions', composition.id]">{{ composition.name }}</a></h2>
+            <p>Created by {{ composition.authorName }} · {{ composition.createdAt | date:'mediumDate' }}</p>
+            @if (composition.ownedByCurrentUser) { <span class="owner-chip">Your composition</span> }
+          </div>
+          <a class="secondary-link composition-open" [routerLink]="['/compositions', composition.id]">View Composition</a>
+          <div class="composition-preview" aria-label="Selected heroes">
+            @for (hero of composition.heroes; track hero.id) {
+              <div class="composition-preview-hero">
+                <div class="hero-icon">
+                  @if (!isImageBroken(hero.id)) { <img [src]="hero.iconUrl" [alt]="hero.name + ' icon'" (error)="markImageBroken(hero.id)" /> }
+                  @else { <span>{{ initials(hero.name) }}</span> }
+                </div>
+                <span>{{ hero.name }}</span>
+              </div>
+            }
+          </div>
+        </article>
+      } @empty {
+        <section class="build-panel"><p class="state">No compositions yet. Be the first to share one.</p></section>
+      }
+    </section>
+  } @else {
+    <section class="build-panel composition-create">
+      @if (hasReachedLimit()) {
+        <p class="state error">You already have 4 compositions. Delete an old composition before creating another one.</p>
+      }
+      <label class="field" for="composition-name">Composition name</label>
+      <input id="composition-name" class="composition-input" maxlength="80" [value]="name()" (input)="updateName($event)" aria-describedby="composition-name-help" />
+      <p id="composition-name-help" class="field-help">3–80 characters.</p>
+      <label class="field" for="composition-notes">Notes</label>
+      <textarea id="composition-notes" class="composition-input" rows="4" maxlength="2000" [value]="notes()" (input)="updateNotes($event)"></textarea>
+
+      <div class="section-heading composition-picker-heading">
+        <div><p class="eyebrow">Hero order</p><h2>Choose 1 to 6 unique heroes</h2></div>
+        <span class="section-count" aria-live="polite">{{ selectedHeroIds().length }}/6</span>
+      </div>
+      <div class="selected-composition-heroes" aria-label="Selected heroes in order">
+        @for (hero of selectedHeroes(); track hero.id; let index = $index) {
+          <div class="selected-composition-hero">
+            <span class="slot-position">{{ index + 1 }}</span><strong>{{ hero.name }}</strong>
+            <button type="button" class="order-button" (click)="moveHero(index, -1)" [disabled]="index === 0" [attr.aria-label]="'Move ' + hero.name + ' left'">←</button>
+            <button type="button" class="order-button" (click)="moveHero(index, 1)" [disabled]="index === selectedHeroes().length - 1" [attr.aria-label]="'Move ' + hero.name + ' right'">→</button>
+            <button type="button" class="order-button remove" (click)="removeHero(hero.id)" [attr.aria-label]="'Remove ' + hero.name">×</button>
+          </div>
+        } @empty { <p class="empty-slots">No heroes selected.</p> }
+      </div>
+      <div class="composition-hero-picker" aria-label="Available heroes">
+        @for (hero of heroes(); track hero.id) {
+          <button type="button" class="composition-hero-option" [class.selected]="isSelected(hero.id)" [attr.aria-pressed]="isSelected(hero.id)" [disabled]="selectedHeroIds().length >= 6 && !isSelected(hero.id)" (click)="toggleHero(hero.id)">
+            <div class="hero-icon">
+              @if (!isImageBroken(hero.id)) { <img [src]="hero.iconUrl" [alt]="hero.name + ' icon'" (error)="markImageBroken(hero.id)" /> }
+              @else { <span>{{ initials(hero.name) }}</span> }
+            </div>
+            <span><strong>{{ hero.name }}</strong><small>{{ hero.heroClass }}</small></span>
+          </button>
+        }
+      </div>
+      <button type="button" class="primary-button save-build-button" [disabled]="!isValid() || isSaving() || hasReachedLimit()" (click)="saveComposition()">{{ isSaving() ? 'Saving...' : 'Save Composition' }}</button>
+    </section>
+  }
+</main>

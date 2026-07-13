@@ -41,9 +41,12 @@ public class SecurityConfig {
                                 "/api/v1/items/**",
                                 "/api/v1/heroes/**",
                                 "/api/builds/public/**",
-                                "/api/builds/**"
+                                "/api/builds/**",
+                                "/api/compositions/**"
                         ).permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/compositions/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/compositions/**").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/builds/**", "/api/votes/**", "/api/comments/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/builds/**", "/api/comments/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/builds/**", "/api/comments/**").authenticated()

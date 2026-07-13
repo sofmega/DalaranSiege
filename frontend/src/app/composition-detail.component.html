@@ -1,0 +1,63 @@
+<main class="page build-detail-page">
+  <nav class="top-nav" aria-label="Primary navigation">
+    <a class="brand-link" routerLink="/">DalaranSiege</a>
+    <div class="nav-links">
+      <a routerLink="/" [queryParams]="{ view: 'heroes' }">Heroes</a>
+      <a routerLink="/" [queryParams]="{ view: 'items' }">Items</a>
+      <a routerLink="/compositions" class="active">Compos</a>
+    </div>
+    <div class="account-bar nav-account" aria-label="Account">
+      <app-theme-toggle />
+      @if (authService.isAuthenticated()) {
+        <span>{{ authService.displayName() }}</span>
+        <button type="button" class="secondary-button" (click)="signOut()">Logout</button>
+      } @else { <a class="secondary-link" routerLink="/auth">Login</a> }
+    </div>
+  </nav>
+
+  <a class="back-link" routerLink="/compositions">← Back to compositions</a>
+  @if (isLoading()) {
+    <p class="state">Loading composition...</p>
+  } @else if (errorMessage()) {
+    <p class="state error" role="alert">{{ errorMessage() }}</p>
+  } @else if (composition(); as selectedComposition) {
+    <article class="detail-build-card composition-detail-card">
+      <header class="detail-build-header">
+        <div class="detail-vote" aria-label="Composition votes">
+          <button type="button" class="vote-arrow" [class.active]="selectedComposition.currentUserVote === 1" (click)="vote(1)" aria-label="Upvote composition">▲</button>
+          <strong>{{ selectedComposition.score }}</strong>
+          <button type="button" class="vote-arrow" [class.active]="selectedComposition.currentUserVote === -1" (click)="vote(-1)" aria-label="Downvote composition">▼</button>
+        </div>
+        <div>
+          <p class="eyebrow">Community Composition</p>
+          <h1>{{ selectedComposition.name }}</h1>
+          <p class="detail-build-author">Created by {{ selectedComposition.authorName }} · {{ selectedComposition.createdAt | date:'mediumDate' }}</p>
+        </div>
+      </header>
+
+      @if (selectedComposition.notes) { <p class="build-notes">{{ selectedComposition.notes }}</p> }
+      @if (authMessage()) { <p class="state" role="status">{{ authMessage() }} @if (!authService.isAuthenticated()) { <a routerLink="/auth">Login</a> }</p> }
+
+      <section class="composition-detail-heroes" aria-label="Composition heroes">
+        @for (hero of selectedComposition.heroes; track hero.id; let index = $index) {
+          <article class="composition-detail-hero">
+            <span class="slot-position">{{ index + 1 }}</span>
+            <div class="hero-icon large-icon">
+              @if (!isImageBroken(hero.id)) { <img [src]="hero.iconUrl" [alt]="hero.name + ' icon'" (error)="markImageBroken(hero.id)" /> }
+              @else { <span>{{ initials(hero.name) }}</span> }
+            </div>
+            <div><h2>{{ hero.name }}</h2><p>{{ hero.heroClass }}</p>
+              <div class="roles" aria-label="Hero roles">@for (role of hero.roles; track role) { <span>{{ role }}</span> }</div>
+            </div>
+          </article>
+        }
+      </section>
+
+      @if (selectedComposition.ownedByCurrentUser) {
+        <div class="composition-owner-actions">
+          <button type="button" class="danger-button" [disabled]="isDeleting()" (click)="deleteComposition()">{{ isDeleting() ? 'Deleting...' : 'Delete Composition' }}</button>
+        </div>
+      }
+    </article>
+  }
+</main>

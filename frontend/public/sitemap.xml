@@ -2,6 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://dalaran-siege.vercel.app/</loc></url>
   <url><loc>https://dalaran-siege.vercel.app/?view=items</loc></url>
+  <url><loc>https://dalaran-siege.vercel.app/compositions</loc></url>
   <url><loc>https://dalaran-siege.vercel.app/items/gauntlets-of-ogre-strength</loc></url>
   <url><loc>https://dalaran-siege.vercel.app/items/slippers-of-agility</loc></url>
   <url><loc>https://dalaran-siege.vercel.app/items/mantle-of-intelligence</loc></url>

@@ -14,6 +14,7 @@ const [items, heroes] = await Promise.all([
 const paths = [
   '/',
   '/?view=items',
+  '/compositions',
   ...items.map((item) => `/items/${encodeURIComponent(item.id)}`),
   ...heroes.map((hero) => `/heroes/${encodeURIComponent(hero.id)}/build`)
 ];

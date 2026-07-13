@@ -16,13 +16,28 @@ public class ApiExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", exception.getMessage()));
     }
 
+    @ExceptionHandler(CompositionLimitExceededException.class)
+    ResponseEntity<Map<String, String>> handleCompositionLimitExceeded(CompositionLimitExceededException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", exception.getMessage()));
+    }
+
     @ExceptionHandler(ForbiddenBuildAccessException.class)
     ResponseEntity<Map<String, String>> handleForbiddenBuildAccess(ForbiddenBuildAccessException exception) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", exception.getMessage()));
     }
 
+    @ExceptionHandler(ForbiddenCompositionAccessException.class)
+    ResponseEntity<Map<String, String>> handleForbiddenCompositionAccess(ForbiddenCompositionAccessException exception) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("message", exception.getMessage()));
+    }
+
     @ExceptionHandler(InvalidBuildItemsException.class)
     ResponseEntity<Map<String, String>> handleInvalidBuildItems(InvalidBuildItemsException exception) {
+        return ResponseEntity.badRequest().body(Map.of("message", exception.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidCompositionException.class)
+    ResponseEntity<Map<String, String>> handleInvalidComposition(InvalidCompositionException exception) {
         return ResponseEntity.badRequest().body(Map.of("message", exception.getMessage()));
     }
 
