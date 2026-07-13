@@ -1,1 +1,38 @@
 <router-outlet />
+
+<aside class="about-widget">
+  @if (aboutOpen) {
+    <section class="about-panel" id="about-panel" role="dialog" aria-labelledby="about-title">
+      <div class="about-panel-header">
+        <h2 id="about-title">About</h2>
+        <button
+          class="about-close"
+          type="button"
+          aria-label="Close About panel"
+          (click)="closeAbout()"
+        >
+          &times;
+        </button>
+      </div>
+
+      <p>Hello! This is a fan-made project created by sofmega#0310 on Discord.</p>
+      <p>Found a bug or have an idea for a new feature? Send me a message on Discord.</p>
+      <p>
+        Interested in contributing? Visit the
+        <a href="https://github.com/sofmega/DalaranSiege" target="_blank" rel="noopener noreferrer"
+          >GitHub repository</a
+        >.
+      </p>
+    </section>
+  }
+
+  <button
+    class="about-trigger"
+    type="button"
+    aria-controls="about-panel"
+    [attr.aria-expanded]="aboutOpen"
+    (click)="toggleAbout()"
+  >
+    About
+  </button>
+</aside>

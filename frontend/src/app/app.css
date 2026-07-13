@@ -2,3 +2,111 @@
   display: block;
   min-height: 100dvh;
 }
+
+.about-widget {
+  position: fixed;
+  right: max(14px, env(safe-area-inset-right));
+  bottom: max(14px, env(safe-area-inset-bottom));
+  z-index: 200;
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+
+.about-trigger,
+.about-close {
+  border: 1px solid var(--border-strong);
+  color: var(--muted-strong);
+  background: var(--panel-solid);
+  cursor: pointer;
+  font-weight: 850;
+}
+
+.about-trigger {
+  border-radius: 999px;
+  padding: 6px 11px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 16%);
+  font-size: 0.75rem;
+}
+
+.about-trigger:hover,
+.about-trigger:focus-visible,
+.about-close:hover,
+.about-close:focus-visible {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: var(--gold-soft);
+  outline: none;
+}
+
+.about-panel {
+  width: min(340px, calc(100vw - 28px));
+  max-height: min(60dvh, 380px);
+  padding: 15px;
+  overflow-y: auto;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  color: var(--text);
+  background: linear-gradient(145deg, rgb(91 140 255 / 8%), transparent 46%), var(--panel-solid);
+  box-shadow: var(--shadow);
+}
+
+.about-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.about-panel h2 {
+  margin: 0;
+  color: var(--heading);
+  font-size: 1rem;
+}
+
+.about-panel p {
+  margin: 0;
+  color: var(--muted-strong);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.about-panel p + p {
+  margin-top: 9px;
+}
+
+.about-panel a {
+  color: var(--blue);
+  font-weight: 850;
+}
+
+.about-panel a:hover,
+.about-panel a:focus-visible {
+  color: var(--gold);
+  outline: none;
+}
+
+.about-close {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  place-items: center;
+  border-radius: 7px;
+  padding: 0;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+@media (max-width: 480px) {
+  .about-widget {
+    right: max(10px, env(safe-area-inset-right));
+    bottom: max(10px, env(safe-area-inset-bottom));
+  }
+
+  .about-panel {
+    width: min(320px, calc(100vw - 20px));
+    max-height: 52dvh;
+  }
+}
