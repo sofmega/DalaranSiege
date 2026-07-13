@@ -50,7 +50,7 @@ receive the database password.
 The Cloud Run deployment is kept within these initial limits:
 
 ```text
-Minimum instances: 0
+Minimum instances: 1
 Maximum instances: 1
 CPU: 1
 Memory: 512 MiB
@@ -250,7 +250,8 @@ gcloud run services logs read dalaransiege-api --project=dalaransiege --region=e
   JWT issuer, and the browser Authorization header.
 - Pages are not indexed: verify production metadata, `robots.txt`, and
   `sitemap.xml`, then inspect Google Search Console coverage and URL inspection.
-- First request is slow: Cloud Run is intentionally configured to scale to zero.
+- First request is slow: verify the Cloud Run minimum instance setting remains at
+  `1` and inspect the latest revision startup logs.
 
 ## Safe change workflow
 

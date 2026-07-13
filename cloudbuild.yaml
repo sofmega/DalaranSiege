@@ -30,7 +30,7 @@ steps:
       - --project=$PROJECT_ID
       - --region=${_REGION}
       - --service-account=${_RUNTIME_SERVICE_ACCOUNT}
-      - --min-instances=0
+      - --min-instances=1
       - --max-instances=1
       - --cpu=1
       - --memory=512Mi
