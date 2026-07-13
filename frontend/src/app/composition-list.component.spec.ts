@@ -62,6 +62,7 @@ describe('CompositionListComponent', () => {
   it('renders both composition controls and public cards for guests without a permanent login banner', () => {
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('a[href="/compositions"]')?.textContent).toContain('Compos');
+    expect(element.querySelector('.site-version')?.textContent).toContain('v1.19');
     expect(element.textContent).toContain('View Compos');
     expect(element.textContent).toContain('Create Composition');
     expect(element.textContent).toContain('Strong team fight');
