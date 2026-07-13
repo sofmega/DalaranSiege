@@ -64,7 +64,8 @@ export class CompositionListComponent {
 
   protected showCreate(): void {
     if (!this.authService.isAuthenticated()) {
-      this.authMessage.set('Login to create a composition.');
+      this.authMessage.set('');
+      this.mode.set('create');
       return;
     }
     if (this.hasReachedLimit()) {

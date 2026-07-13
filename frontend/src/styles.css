@@ -917,6 +917,8 @@ a.recipe-node:focus-visible {
 }
 .composition-input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgb(91 140 255 / 14%); }
 .composition-picker-heading { margin-top: 20px; }
+.composition-create-login { max-width: 620px; }
+.composition-login-message { margin: 0 0 18px; color: var(--muted-strong); line-height: 1.55; }
 
 .selected-composition-heroes { display: grid; gap: 8px; margin-bottom: 16px; padding: 10px; border: 1px dashed var(--border); border-radius: 8px; }
 .selected-composition-hero { display: grid; grid-template-columns: 28px minmax(0, 1fr) repeat(3, 34px); align-items: center; gap: 7px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: var(--inset-bg); }

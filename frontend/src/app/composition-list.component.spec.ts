@@ -59,19 +59,40 @@ describe('CompositionListComponent', () => {
     vi.clearAllMocks();
   });
 
-  it('renders Compos navigation and public composition cards for guests', () => {
+  it('renders both composition controls and public cards for guests without a permanent login banner', () => {
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('a[href="/compositions"]')?.textContent).toContain('Compos');
+    expect(element.textContent).toContain('View Compos');
+    expect(element.textContent).toContain('Create Composition');
     expect(element.textContent).toContain('Strong team fight');
     expect(element.textContent).toContain('Hero 1');
-    expect(element.textContent).toContain('Login or register');
+    expect(element.textContent).not.toContain('Anyone can browse compositions');
+    expect(element.textContent).not.toContain('You need to log in or create an account');
   });
 
-  it('shows the create control only to authenticated users', () => {
-    expect((fixture.nativeElement as HTMLElement).textContent).not.toContain('Create Compo');
+  it('shows a login-required create state to guests without rendering the form', () => {
+    const createButton = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('button'))
+      .find((button) => button.textContent?.includes('Create Composition'));
+    createButton?.click();
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.textContent).toContain('You need to log in or create an account to create a composition.');
+    expect(element.textContent).toContain('Login or register');
+    expect(element.querySelector('#composition-name')).toBeNull();
+    expect(element.querySelector('.composition-hero-picker')).toBeNull();
+  });
+
+  it('shows the creation form instead of the guest message to authenticated users', () => {
     authenticated.set(true);
     fixture.detectChanges();
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Create Compo');
+    const createButton = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('button'))
+      .find((button) => button.textContent?.includes('Create Composition'));
+    createButton?.click();
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('#composition-name')).not.toBeNull();
+    expect(element.querySelector('.composition-hero-picker')).not.toBeNull();
+    expect(element.textContent).not.toContain('You need to log in or create an account');
   });
 
   it('selects, removes, and never duplicates heroes', () => {

@@ -23,15 +23,10 @@
     <p class="summary">Discover teams created by the community, or arrange up to six heroes into your own composition.</p>
     <div class="view-switcher" aria-label="Composition mode">
       <button type="button" [class.active]="mode() === 'view'" (click)="showView()">View Compos</button>
-      @if (authService.isAuthenticated()) {
-        <button type="button" [class.active]="mode() === 'create'" (click)="showCreate()">Create Compo</button>
-      }
+      <button type="button" [class.active]="mode() === 'create'" (click)="showCreate()">Create Composition</button>
     </div>
   </header>
 
-  @if (!authService.isAuthenticated()) {
-    <p class="state">Anyone can browse compositions. <a routerLink="/auth">Login or register</a> to create and vote.</p>
-  }
   @if (authMessage()) {
     <p class="state" role="status">{{ authMessage() }} @if (!authService.isAuthenticated()) { <a routerLink="/auth">Login</a> }</p>
   }
@@ -69,6 +64,11 @@
       } @empty {
         <section class="build-panel"><p class="state">No compositions yet. Be the first to share one.</p></section>
       }
+    </section>
+  } @else if (!authService.isAuthenticated()) {
+    <section class="build-panel composition-create-login">
+      <p class="composition-login-message">You need to log in or create an account to create a composition.</p>
+      <a class="secondary-link" routerLink="/auth">Login or register</a>
     </section>
   } @else {
     <section class="build-panel composition-create">
